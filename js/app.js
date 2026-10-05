@@ -235,6 +235,7 @@ function initEnquiryForm() {
       `🛠️ *Service:* ${formData.service}\n` +
       `💰 *Budget:* ${formData.budget}\n\n` +
       `📝 *Requirements:*\n${formData.message}\n\n` +
+      `⚡ *Note:* Please reply within 30 minutes as promised on website\n` +
       `---\nSent from rkdigitalstudio.in website`
     );
     const waUrl = `https://wa.me/919519073791?text=${waText}`;
@@ -271,7 +272,7 @@ function initEnquiryForm() {
       }
 
       form.reset();
-      showToast('Enquiry bhej di gayi hai! WhatsApp par message ready hai.');
+      showToast('✅ Enquiry received! Hamari team 30 minute me reply karegi.');
 
     } catch (err) {
       console.error('Submission error:', err);
@@ -284,7 +285,7 @@ function initEnquiryForm() {
       showToast('Enquiry saved! Direct WhatsApp par chat karein.');
     } finally {
       if (submitBtn) submitBtn.disabled = false;
-      if (btnText) btnText.textContent = 'Send Enquiry';
+      if (btnText) btnText.textContent = 'Send Enquiry (Get Reply in 30 Min) 🚀';
       if (btnSpinner) btnSpinner.style.display = 'none';
     }
   });
@@ -445,6 +446,7 @@ function initAdminLogs() {
 
   function openModal() {
     renderLogs();
+    updateSupabaseStatus();
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
@@ -452,6 +454,90 @@ function initAdminLogs() {
   function closeModal() {
     modal.classList.remove('open');
     document.body.style.overflow = '';
+  }
+
+  // --- Supabase Cloud Connection Manager ---
+  function updateSupabaseStatus() {
+    const status = window.RK_DB?.getSupabaseConfig();
+    const dot = document.getElementById('supabaseStatusDot');
+    const badge = document.getElementById('supabaseStatusBadge');
+    const urlInput = document.getElementById('supabaseUrlInput');
+    const keyInput = document.getElementById('supabaseKeyInput');
+
+    if (!status || !dot || !badge) return;
+
+    if (status.isConnected) {
+      dot.style.background = '#10b981';
+      dot.style.boxShadow = '0 0 8px #10b981';
+      badge.textContent = 'Active & Syncing';
+      badge.style.background = 'rgba(16, 185, 129, 0.2)';
+      badge.style.color = '#34d399';
+    } else {
+      dot.style.background = '#f59e0b';
+      dot.style.boxShadow = 'none';
+      badge.textContent = 'Not Connected';
+      badge.style.background = 'rgba(245, 158, 11, 0.15)';
+      badge.style.color = '#fbbf24';
+    }
+
+    if (urlInput && status.url) urlInput.value = status.url;
+    if (keyInput && status.key) keyInput.value = status.key;
+  }
+
+  const toggleConfigBtn = document.getElementById('toggleSupabaseConfigBtn');
+  const configForm = document.getElementById('supabaseConfigForm');
+  if (toggleConfigBtn && configForm) {
+    toggleConfigBtn.addEventListener('click', () => {
+      const isHidden = configForm.style.display === 'none' || !configForm.style.display;
+      configForm.style.display = isHidden ? 'block' : 'none';
+      toggleConfigBtn.textContent = isHidden ? 'Close Form ✕' : 'Configure Credentials ⚙️';
+    });
+  }
+
+  const saveSupabaseBtn = document.getElementById('saveSupabaseConfigBtn');
+  if (saveSupabaseBtn) {
+    saveSupabaseBtn.addEventListener('click', async () => {
+      const urlInput = document.getElementById('supabaseUrlInput');
+      const keyInput = document.getElementById('supabaseKeyInput');
+      const urlVal = urlInput ? urlInput.value.trim() : '';
+      const keyVal = keyInput ? keyInput.value.trim() : '';
+
+      if (!urlVal || !keyVal) {
+        alert('Kripya dono Supabase URL aur Anon Public Key enter karein.');
+        return;
+      }
+
+      saveSupabaseBtn.textContent = 'Testing...';
+      saveSupabaseBtn.disabled = true;
+
+      try {
+        window.RK_DB?.setSupabaseConfig(urlVal, keyVal);
+        updateSupabaseStatus();
+        showToast('⚡ Supabase credentials save ho gaye! Enquiries sync shuru.');
+        if (configForm) configForm.style.display = 'none';
+        if (toggleConfigBtn) toggleConfigBtn.textContent = 'Configure Credentials ⚙️';
+      } catch (err) {
+        alert('Error saving credentials: ' + err.message);
+      } finally {
+        saveSupabaseBtn.textContent = 'Save & Connect';
+        saveSupabaseBtn.disabled = false;
+      }
+    });
+  }
+
+  const disconnectBtn = document.getElementById('disconnectSupabaseBtn');
+  if (disconnectBtn) {
+    disconnectBtn.addEventListener('click', () => {
+      if (confirm('Kya aap Supabase disconnect karna chahte hain?')) {
+        window.RK_DB?.disconnectSupabase();
+        const urlInput = document.getElementById('supabaseUrlInput');
+        const keyInput = document.getElementById('supabaseKeyInput');
+        if (urlInput) urlInput.value = '';
+        if (keyInput) keyInput.value = '';
+        updateSupabaseStatus();
+        showToast('Supabase disconnected.');
+      }
+    });
   }
 
   if (adminBtn) {
