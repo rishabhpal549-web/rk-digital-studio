@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initEnquiryForm();
   initProjectModal();
   initCopyButtons();
+  initAdminLogs();
 });
 
 /* ==========================================================================
@@ -217,39 +218,48 @@ function initEnquiryForm() {
       fullName: nameVal,
       phone: rawPhone,
       email: emailVal,
-      businessName: businessNameInput.value.trim(),
-      businessType: businessTypeInput.value.trim(),
+      businessName: businessNameInput ? businessNameInput.value.trim() : '',
+      businessType: businessTypeInput ? businessTypeInput.value.trim() : '',
       service: serviceVal,
       budget: selectedBudget,
       message: messageVal
     };
 
+    // 1. Prepare WhatsApp formatted message
+    const waText = encodeURIComponent(
+      `*🔥 New Website Enquiry — RK DIGITAL STUDIO*\n\n` +
+      `👤 *Name:* ${formData.fullName}\n` +
+      `📞 *Phone:* ${formData.phone}\n` +
+      (formData.email ? `📧 *Email:* ${formData.email}\n` : '') +
+      (formData.businessName ? `🏢 *Business:* ${formData.businessName} (${formData.businessType || 'General'})\n` : '') +
+      `🛠️ *Service:* ${formData.service}\n` +
+      `💰 *Budget:* ${formData.budget}\n\n` +
+      `📝 *Requirements:*\n${formData.message}\n\n` +
+      `---\nSent from rkdigitalstudio.in website`
+    );
+    const waUrl = `https://wa.me/919519073791?text=${waText}`;
+
+    // 2. Open WhatsApp immediately on user click to avoid popup blocker on mobile & desktop
+    try {
+      window.open(waUrl, '_blank');
+    } catch (popupErr) {
+      console.warn('Direct WhatsApp open failed or blocked:', popupErr);
+    }
+
     // UI Loading state
     if (submitBtn) submitBtn.disabled = true;
-    if (btnText) btnText.textContent = 'Submitting Enquiry...';
+    if (btnText) btnText.textContent = 'Sending Enquiry...';
     if (btnSpinner) btnSpinner.style.display = 'inline-block';
 
     try {
-      // Dispatch to database handler (Supabase / local queue fallback)
-      let saveResult = { success: true };
+      // 3. Dispatch to database & email notification handler (FormSubmit / Supabase / local queue)
       if (window.RK_DB && typeof window.RK_DB.saveEnquiryRecord === 'function') {
-        saveResult = await window.RK_DB.saveEnquiryRecord(formData);
+        await window.RK_DB.saveEnquiryRecord(formData);
       } else {
         await new Promise(r => setTimeout(r, 600));
       }
 
-      // Generate instant WhatsApp prefilled text for direct user convenience
-      const waText = encodeURIComponent(
-        `Hello RK DIGITAL STUDIO,\n\nI have submitted a website enquiry.\n` +
-        `• Name: ${formData.fullName}\n` +
-        `• Phone: ${formData.phone}\n` +
-        `• Business: ${formData.businessName || 'Local Business'}\n` +
-        `• Service: ${formData.service}\n` +
-        `• Budget: ${formData.budget}\n` +
-        `• Requirements: ${formData.message}\n\nPlease let me know the next steps.`
-      );
-      const waUrl = `https://wa.me/919519073791?text=${waText}`;
-
+      // Update WhatsApp direct buttons in success banner
       if (waDirectBtn) {
         waDirectBtn.href = waUrl;
       }
@@ -261,11 +271,17 @@ function initEnquiryForm() {
       }
 
       form.reset();
-      showToast('Enquiry received! We will contact you soon.');
+      showToast('Enquiry bhej di gayi hai! WhatsApp par message ready hai.');
 
     } catch (err) {
       console.error('Submission error:', err);
-      alert('Your enquiry was saved locally. You can also chat directly on WhatsApp at 9519073791.');
+      if (waDirectBtn) {
+        waDirectBtn.href = waUrl;
+      }
+      if (successBanner) {
+        successBanner.classList.add('visible');
+      }
+      showToast('Enquiry saved! Direct WhatsApp par chat karein.');
     } finally {
       if (submitBtn) submitBtn.disabled = false;
       if (btnText) btnText.textContent = 'Send Enquiry';
@@ -360,4 +376,122 @@ function showToast(message) {
   setTimeout(() => {
     toast.classList.remove('show');
   }, 3500);
+}
+
+/* ==========================================================================
+   7. Admin Enquiry Logs Modal & Shortcut (Ctrl+Shift+E)
+   ========================================================================== */
+function initAdminLogs() {
+  const adminBtn = document.getElementById('openAdminLogsBtn');
+  const modal = document.getElementById('adminEnquiryModal');
+  const listContainer = document.getElementById('adminEnquiryList');
+  const clearBtn = document.getElementById('clearAdminLogsBtn');
+
+  if (!modal || !listContainer) return;
+
+  function renderLogs() {
+    const enquiries = window.RK_DB?.getLocalEnquiries() || [];
+    if (enquiries.length === 0) {
+      listContainer.innerHTML = `
+        <div style="text-align: center; padding: 36px 16px; color: #94a3b8;">
+          <div style="font-size: 2rem; margin-bottom: 8px;">📭</div>
+          <p style="font-size: 1.05rem; color: #e2e8f0; font-weight: 600; margin-bottom: 6px;">Abhi koi local enquiry nahi hai</p>
+          <p style="font-size: 0.85rem;">Jab koi website par enquiry form bharega, uski puri detail yahan dikhegi.</p>
+        </div>
+      `;
+      return;
+    }
+
+    listContainer.innerHTML = enquiries.map((enq) => {
+      const dateStr = enq.created_at ? new Date(enq.created_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : 'Recent';
+      const cleanPhone = (enq.phone || '').replace(/\D/g, '');
+      const waMsg = encodeURIComponent(`Hello ${enq.full_name}, I saw your website enquiry on RK DIGITAL STUDIO regarding ${enq.service}.`);
+      return `
+        <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 18px; margin-bottom: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <strong style="color: #fff; font-size: 1.1rem; display: block;">${enq.full_name || 'Client'}</strong>
+              <span style="font-size: 0.85rem; color: #38bdf8;">${enq.business_name ? `${enq.business_name} (${enq.business_type || 'Business'})` : 'Local Client'}</span>
+            </div>
+            <span style="font-size: 0.75rem; background: rgba(56, 189, 248, 0.12); color: #38bdf8; padding: 4px 10px; border-radius: 20px; font-weight: 500;">
+              ${dateStr}
+            </span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; font-size: 0.875rem; color: #cbd5e1; margin-bottom: 12px; background: rgba(0,0,0,0.2); padding: 10px 14px; border-radius: 8px;">
+            <div><span style="color:#94a3b8;">Phone:</span> <a href="tel:+91${cleanPhone}" style="color: #38bdf8; font-weight:600;">${enq.phone}</a></div>
+            <div><span style="color:#94a3b8;">Service:</span> <span style="color:#fff; font-weight:500;">${enq.service}</span></div>
+            <div><span style="color:#94a3b8;">Budget:</span> <span style="color:#34d399; font-weight:600;">${enq.budget}</span></div>
+            <div><span style="color:#94a3b8;">Email:</span> <span style="color:#fff;">${enq.email || 'N/A'}</span></div>
+          </div>
+
+          <div style="background: rgba(15, 23, 42, 0.6); padding: 12px 14px; border-radius: 8px; font-size: 0.875rem; color: #e2e8f0; margin-bottom: 14px; line-height: 1.6; border-left: 3px solid #38bdf8;">
+            <strong style="color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; display: block; margin-bottom: 4px;">Requirements:</strong>
+            ${enq.message}
+          </div>
+
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <a href="https://wa.me/91${cleanPhone}?text=${waMsg}" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-sm" style="padding: 7px 14px; font-size: 0.85rem;">
+              <span>WhatsApp Chat 💬</span>
+            </a>
+            <a href="tel:+91${cleanPhone}" class="btn btn-secondary btn-sm" style="padding: 7px 14px; font-size: 0.85rem;">
+              <span>Call Client 📞</span>
+            </a>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function openModal() {
+    renderLogs();
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  if (adminBtn) {
+    adminBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openModal();
+    });
+  }
+
+  const closeBtn = document.getElementById('closeAdminLogsBtn');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeModal);
+  }
+
+  const backdrop = modal.querySelector('.modal-backdrop');
+  if (backdrop) {
+    backdrop.addEventListener('click', closeModal);
+  }
+
+  // Secret shortcut: Ctrl + Shift + E or typing #admin in URL
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && (e.key === 'E' || e.key === 'e')) {
+      e.preventDefault();
+      openModal();
+    }
+    if (e.key === 'Escape' && modal.classList.contains('open')) {
+      closeModal();
+    }
+  });
+
+  if (window.location.hash === '#admin' || window.location.hash === '#admin-logs') {
+    openModal();
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      if (confirm('Kya aap saare local enquiry logs delete karna chahte hain?')) {
+        window.RK_DB?.clearLocalEnquiries();
+        renderLogs();
+      }
+    });
+  }
 }
