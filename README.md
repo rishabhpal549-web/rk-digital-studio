@@ -21,6 +21,8 @@ RK DIGITAL STUDIO is a modern website development and digital solutions studio b
 
 - **Live Website:** [https://rk-digital-studio.vercel.app/](https://rk-digital-studio.vercel.app/)
 - **Repository:** [https://github.com/rishabhpal549-web/rk-digital-studio](https://github.com/rishabhpal549-web/rk-digital-studio)
+- **Instagram Profile:** [instagram.com/digita.withr](https://www.instagram.com/digita.withr)
+- **YouTube Channel:** [youtube.com/@RKDigitalStudio-h2f](https://www.youtube.com/@RKDigitalStudio-h2f)
 - **WhatsApp Support:** [+91 95190 73791](https://wa.me/919519073791)
 - **Direct Email:** [rishabhpal549@gmail.com](mailto:rishabhpal549@gmail.com)
 
