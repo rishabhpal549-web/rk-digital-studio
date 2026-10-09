@@ -696,12 +696,13 @@ button, input, select, textarea {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  padding: 36px 28px;
+  padding: 0 28px 36px 28px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   transition: var(--transition);
   position: relative;
+  overflow: hidden;
 }
 
 .service-card:hover {
@@ -710,19 +711,50 @@ button, input, select, textarea {
   box-shadow: var(--shadow-md), 0 0 25px rgba(37, 99, 235, 0.15);
 }
 
+.service-thumb-wrap {
+  position: relative;
+  width: calc(100% + 56px);
+  margin: 0 -28px 24px -28px;
+  height: 195px;
+  overflow: hidden;
+  background: #080d1a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.service-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.service-card:hover .service-thumb-img {
+  transform: scale(1.06);
+}
+
+.service-thumb-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(7, 11, 20, 0.05) 0%, rgba(19, 28, 49, 0.6) 100%);
+  pointer-events: none;
+}
+
 .service-badge-pill {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 14px;
+  right: 14px;
   font-size: 0.75rem;
   font-weight: 700;
   padding: 4px 10px;
   border-radius: var(--radius-pill);
-  background: rgba(6, 182, 212, 0.15);
+  background: rgba(6, 182, 212, 0.25);
   color: var(--accent-cyan);
-  border: 1px solid rgba(6, 182, 212, 0.3);
+  border: 1px solid rgba(6, 182, 212, 0.4);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  backdrop-filter: blur(8px);
+  z-index: 2;
 }
 
 .service-header {
@@ -990,6 +1022,93 @@ button, input, select, textarea {
   color: var(--text-white);
 }
 
+/* Secondary Showcase Projects */
+.portfolio-grid-secondary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  margin-bottom: 32px;
+}
+
+.portfolio-card-item {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition);
+}
+
+.portfolio-card-item:hover {
+  transform: translateY(-6px);
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: var(--shadow-md);
+}
+
+.portfolio-card-thumb {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+  background: #080d1a;
+}
+
+.portfolio-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.portfolio-card-item:hover .portfolio-card-img {
+  transform: scale(1.05);
+}
+
+.portfolio-card-content {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.portfolio-card-content .portfolio-badge {
+  align-self: flex-start;
+  margin-bottom: 12px;
+}
+
+.portfolio-card-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text-white);
+}
+
+.portfolio-card-desc {
+  font-size: 0.925rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+.portfolio-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.portfolio-mini-tag {
+  font-size: 0.775rem;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+}
+
 /* --- Why Choose Us --- */
 .why-grid {
   display: grid;
@@ -1196,6 +1315,16 @@ button, input, select, textarea {
   align-items: center;
   gap: 16px;
   margin-bottom: 20px;
+}
+
+.founder-avatar-img {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary-light);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
+  flex-shrink: 0;
 }
 
 .founder-avatar-icon {
@@ -1618,25 +1747,157 @@ button, input, select, textarea {
   justify-content: center;
 }
 
-/* --- Testimonials Teaser Banner --- */
-.testimonials-coming-soon {
-  background: rgba(14, 21, 38, 0.5);
-  border: 1px dashed rgba(255, 255, 255, 0.12);
+/* --- About Workspace Visual Banner --- */
+.about-workspace-banner {
+  margin-top: 36px;
   border-radius: var(--radius-lg);
-  padding: 32px;
-  text-align: center;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  position: relative;
+  box-shadow: var(--shadow-md);
+}
+
+.about-workspace-img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  display: block;
+}
+
+.about-workspace-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 24px;
+  background: linear-gradient(180deg, transparent 0%, rgba(7, 11, 20, 0.95) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.about-workspace-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.about-workspace-badge {
+  font-size: 0.75rem;
+  background: rgba(37, 99, 235, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  color: var(--primary-light);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+}
+
+/* --- Client Testimonials Section --- */
+.testimonials-section-wrap {
   margin-top: 48px;
 }
 
-.testimonials-coming-soon h4 {
-  font-size: 1.15rem;
+.testimonials-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.testimonials-header h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
   margin-bottom: 8px;
 }
 
-.testimonials-coming-soon p {
+.testimonials-header p {
+  color: var(--text-secondary);
   font-size: 0.925rem;
-  max-width: 600px;
-  margin: 0 auto;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.testimonial-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: var(--transition);
+  position: relative;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: var(--shadow-md), 0 0 20px rgba(37, 99, 235, 0.12);
+}
+
+.testimonial-stars {
+  color: #fbbf24;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  margin-bottom: 14px;
+}
+
+.testimonial-quote {
+  font-size: 0.925rem;
+  line-height: 1.65;
+  color: #cbd5e1;
+  font-style: italic;
+  margin-bottom: 22px;
+  flex-grow: 1;
+}
+
+.testimonial-client {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 16px;
+}
+
+.testimonial-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(59, 130, 246, 0.45);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+}
+
+.testimonial-meta h5 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-white);
+  margin-bottom: 3px;
+}
+
+.testimonial-meta p {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+.testimonial-verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.725rem;
+  color: #34d399;
+  font-weight: 600;
+  margin-top: 2px;
 }
 
 /* --- Footer --- */
@@ -2123,6 +2384,14 @@ button, input, select, textarea {
   .portfolio-featured-card {
     grid-template-columns: 1fr;
     padding: 28px;
+  }
+
+  .portfolio-grid-secondary {
+    grid-template-columns: 1fr;
+  }
+
+  .testimonials-grid {
+    grid-template-columns: 1fr;
   }
 
   .footer-grid {
