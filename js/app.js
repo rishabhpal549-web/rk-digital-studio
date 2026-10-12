@@ -240,25 +240,27 @@ function initEnquiryForm() {
     );
     const waUrl = `https://wa.me/919519073791?text=${waText}`;
 
-    // 2. Open WhatsApp immediately on user click to avoid popup blocker on mobile & desktop
-    try {
-      window.open(waUrl, '_blank');
-    } catch (popupErr) {
-      console.warn('Direct WhatsApp open failed or blocked:', popupErr);
-    }
+    const errorBanner = document.getElementById('formErrorBanner');
+    const waErrorBtn = document.getElementById('waErrorDirectBtn');
 
     // UI Loading state
     if (submitBtn) submitBtn.disabled = true;
-    if (btnText) btnText.textContent = 'Sending Enquiry...';
+    if (btnText) btnText.textContent = 'Submitting Enquiry...';
     if (btnSpinner) btnSpinner.style.display = 'inline-block';
 
     try {
-      // 3. Dispatch to database & email notification handler (FormSubmit / Supabase / local queue)
-      if (window.RK_DB && typeof window.RK_DB.saveEnquiryRecord === 'function') {
-        await window.RK_DB.saveEnquiryRecord(formData);
-      } else {
-        await new Promise(r => setTimeout(r, 600));
+      // Dispatch to database & email notification handler (FormSubmit / Supabase / local queue)
+      if (!window.RK_DB || typeof window.RK_DB.saveEnquiryRecord !== 'function') {
+        throw new Error('Database handler is not available to record this enquiry.');
       }
+
+      const result = await window.RK_DB.saveEnquiryRecord(formData);
+      if (!result || !result.success) {
+        throw new Error(result?.message || 'Enquiry record could not be saved.');
+      }
+
+      // Hide any previous error banner
+      if (errorBanner) errorBanner.style.display = 'none';
 
       // Update WhatsApp direct buttons in success banner
       if (waDirectBtn) {
@@ -272,17 +274,25 @@ function initEnquiryForm() {
       }
 
       form.reset();
-      showToast('✅ Enquiry received! Hamari team 30 minute me reply karegi.');
+      showToast('✅ Enquiry received! Our team will contact you within 30 minutes.');
 
     } catch (err) {
       console.error('Submission error:', err);
-      if (waDirectBtn) {
-        waDirectBtn.href = waUrl;
-      }
+
       if (successBanner) {
-        successBanner.classList.add('visible');
+        successBanner.classList.remove('visible');
       }
-      showToast('Enquiry saved! Direct WhatsApp par chat karein.');
+
+      if (errorBanner) {
+        errorBanner.style.display = 'block';
+        errorBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      if (waErrorBtn) {
+        waErrorBtn.href = waUrl;
+      }
+
+      showToast('⚠️ Could not send online. Please tap WhatsApp to send directly.');
     } finally {
       if (submitBtn) submitBtn.disabled = false;
       if (btnText) btnText.textContent = 'Send Enquiry (Get Reply in 30 Min) 🚀';

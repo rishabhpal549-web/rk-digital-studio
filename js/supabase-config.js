@@ -93,10 +93,12 @@ async function saveEnquiryRecord(data) {
   };
 
   // 1. Store locally in browser cache queue for safety and offline resilience
+  let savedLocally = false;
   try {
     const existing = JSON.parse(localStorage.getItem(RK_DB_CONFIG.localStorageKey) || '[]');
     existing.unshift(enquiryPayload);
     localStorage.setItem(RK_DB_CONFIG.localStorageKey, JSON.stringify(existing.slice(0, 100)));
+    savedLocally = true;
   } catch (err) {
     console.warn('Local storage write warning:', err);
   }
@@ -136,17 +138,24 @@ async function saveEnquiryRecord(data) {
   // Await email dispatch with a 4 second timeout so user is not kept waiting
   const emailResult = await Promise.race([
     emailPromise,
-    new Promise(resolve => setTimeout(() => resolve({ success: true, message: 'Timed out' }), 4000))
+    new Promise(resolve => setTimeout(() => resolve({ success: false, message: 'Timed out' }), 4000))
   ]);
 
   const supabaseResult = await supabasePromise;
+
+  // Verify that at least one persistence layer succeeded
+  const isSaved = savedLocally || emailResult.success || supabaseResult.synced;
+  if (!isSaved) {
+    throw new Error('Unable to record enquiry to local queue or remote notification server.');
+  }
 
   return {
     success: true,
     message: 'Enquiry processed successfully.',
     recordId: enquiryPayload.id,
     emailSent: emailResult.success,
-    supabaseSynced: supabaseResult.synced
+    supabaseSynced: supabaseResult.synced,
+    savedLocally: savedLocally
   };
 }
 

@@ -9,17 +9,20 @@ RK DIGITAL STUDIO is a modern website development and digital solutions studio b
 ## 🌟 Key Features
 
 - **100% Mobile Responsive:** Optimized across smartphones, tablets, laptops, and 4K desktops.
-- **Customer Enquiry Focused:** Fast contact options, clear value proposition, and frictionless lead capture.
+- **Accessible & Fast:** Semantic HTML5, accessible skip links, visible keyboard focus outlines, and under-2-second load times.
+- **Dedicated Service Hubs:** Deep informational pages for Business, School, Coaching, E-commerce, and Enquiry Form solutions.
+- **Educational SEO Blog:** Practical learning guides for business owners, schools, and coaching directors.
+- **Customer Enquiry Focused:** Fast contact options, clear value proposition, and frictionless lead capture with guaranteed 30-minute responses.
 - **Instant WhatsApp Integration:** One-click WhatsApp enquiry generator with pre-filled business details.
-- **Genuine Client Portfolio:** Highlights live institutional projects such as [Sunbeam English School Bhagwanpur](https://sunbeam-school-mocha.vercel.app/).
-- **Database Ready:** Structured PostgreSQL schema for Supabase (`enquiries` table) with resilient client-side storage fallback.
-- **Fast Performance & Local SEO:** Semantic HTML5, Schema.org `ProfessionalService` JSON-LD, sitemap, and robots configuration.
+- **Honest Portfolio Standards:** Clearly distinguishes between verified client projects ([Sunbeam English School](https://sunbeam-school-mocha.vercel.app/)) and concept prototypes.
+- **Resilient Backend:** Supabase cloud database integration (`schema.sql`) with FormSubmit email fallback and local storage logging.
+- **Technical SEO Ready:** Canonical tags to production domain, Schema.org (`WebSite`, `ProfessionalService`, `BlogPosting`, `BreadcrumbList`), robots.txt, and canonical XML sitemap.
 
 ---
 
 ## 🚀 Live Demo & Links
 
-- **Live Website:** [https://rk-digital-studio.vercel.app/](https://rk-digital-studio.vercel.app/)
+- **Live Production Website:** [https://rk-digital-studio-delta.vercel.app/](https://rk-digital-studio-delta.vercel.app/)
 - **Repository:** [https://github.com/rishabhpal549-web/rk-digital-studio](https://github.com/rishabhpal549-web/rk-digital-studio)
 - **Instagram Profile:** [instagram.com/digita.withr](https://www.instagram.com/digita.withr)
 - **YouTube Channel:** [youtube.com/@RKDigitalStudio-h2f](https://www.youtube.com/@RKDigitalStudio-h2f)
@@ -30,10 +33,10 @@ RK DIGITAL STUDIO is a modern website development and digital solutions studio b
 
 ## 🛠️ Technology Stack
 
-- **Frontend:** Semantic HTML5, Modern Vanilla CSS (Tokens, Glassmorphism, CSS Grid & Flexbox)
+- **Frontend:** Semantic HTML5, Modern Vanilla CSS (Design Tokens, Glassmorphism, CSS Grid & Flexbox, Accessible States)
 - **Interactions:** Vanilla JavaScript ES6+ (Scroll Spy, Modal Dialogs, Phone Validation, Form Dispatcher)
-- **Database:** Supabase REST API & PostgreSQL (`schema.sql`)
-- **Deployment:** Vercel & GitHub
+- **Database & Enquiries:** Supabase REST API & PostgreSQL (`schema.sql`), FormSubmit Email Dispatcher
+- **Deployment:** Vercel & GitHub Static Hosting
 
 ---
 
@@ -42,20 +45,29 @@ RK DIGITAL STUDIO is a modern website development and digital solutions studio b
 ```
 rk-digital-studio/
 ├── index.html                   # Core semantic landing page
-├── vercel.json                  # Vercel caching and routing configuration
-├── sitemap.xml                  # SEO XML sitemap
+├── vercel.json                  # Vercel caching and clean URL configuration
+├── sitemap.xml                  # Canonical XML sitemap (12 URLs)
 ├── robots.txt                   # Search crawler directives
 ├── schema.sql                   # Supabase database schema for enquiries
 ├── css/
-│   └── styles.css               # Design system & responsive styles
+│   └── styles.css               # Design system, accessible states & responsive layouts
 ├── js/
-│   ├── app.js                   # Application interactivity & form handling
+│   ├── app.js                   # Application interactivity & verified form submission
 │   └── supabase-config.js       # Database handler & local queue
-└── assets/
-    ├── favicon.svg              # Scalable vector favicon
-    ├── logo.svg                 # Scalable vector brand emblem
-    ├── hero-mockup.jpg          # High-resolution hero device showcase
-    └── sunbeam-school-preview.jpg# Real portfolio project showcase
+├── services/                    # Dedicated SEO Service Pages
+│   ├── business-website-development.html
+│   ├── school-website-development.html
+│   ├── coaching-website-development.html
+│   ├── ecommerce-website-development.html
+│   └── website-enquiry-forms.html
+├── blog/                        # SEO & Learning Hub
+│   ├── index.html               # Article index
+│   ├── how-to-create-a-business-website.html
+│   ├── why-schools-need-a-website.html
+│   ├── how-seo-helps-small-businesses.html
+│   ├── website-design-vs-digital-marketing.html
+│   └── how-to-choose-a-website-for-a-coaching-institute.html
+└── assets/                      # Optimized image and SVG assets
 ```
 
 ---

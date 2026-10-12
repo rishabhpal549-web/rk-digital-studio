@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://rkdigitalstudio.in/sitemap.xml
+Sitemap: https://rk-digital-studio-delta.vercel.app/sitemap.xml
