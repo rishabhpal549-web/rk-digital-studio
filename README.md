@@ -22,7 +22,7 @@ RK DIGITAL STUDIO is a modern website development and digital solutions studio b
 
 ## 🚀 Live Demo & Links
 
-- **Live Production Website:** [https://www.rkdigitalstudio.in/](https://www.rkdigitalstudio.in/)
+- **Live Production Website:** [https://www.rkdigitaistudio.in/](https://www.rkdigitaistudio.in/)
 - **Repository:** [https://github.com/rishabhpal549-web/rk-digital-studio](https://github.com/rishabhpal549-web/rk-digital-studio)
 - **Instagram Profile:** [instagram.com/digita.withr](https://www.instagram.com/digita.withr)
 - **YouTube Channel:** [youtube.com/@RKDigitalStudio-h2f](https://www.youtube.com/@RKDigitalStudio-h2f)

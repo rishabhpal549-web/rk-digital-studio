@@ -309,7 +309,7 @@ VALUES (
     'Designed for regional coaching institutes in Varanasi and Mirzapur. Features course breakdowns for JEE/NEET, batch schedules, faculty profiles, test series highlights, and instant student admission inquiry forms.',
     'assets/service-coaching.jpg',
     '["assets/service-coaching.jpg"]'::jsonb,
-    'https://www.rkdigitalstudio.in/services/coaching-website-development',
+    'https://www.rkdigitaistudio.in/services/coaching-website-development',
     'Concept Prototype',
     false,
     'published'
@@ -338,7 +338,7 @@ VALUES (
     'Tailored e-commerce showcase highlighting Chunar red clay pottery and Banarasi handloom products. Includes catalog filtering, high-resolution product showcases, cart drawer, and frictionless WhatsApp checkout integration.',
     'assets/service-ecommerce.jpg',
     '["assets/service-ecommerce.jpg"]'::jsonb,
-    'https://www.rkdigitalstudio.in/services/ecommerce-website-development',
+    'https://www.rkdigitaistudio.in/services/ecommerce-website-development',
     'Concept Prototype',
     false,
     'published'

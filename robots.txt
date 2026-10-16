@@ -3,5 +3,4 @@ Allow: /
 Disallow: /admin/
 Disallow: /admin
 
-
-Sitemap: https://www.rkdigitalstudio.in/sitemap.xml
+Sitemap: https://www.rkdigitaistudio.in/sitemap.xml

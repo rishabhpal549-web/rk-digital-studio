@@ -237,7 +237,7 @@ function initEnquiryForm() {
       `💰 *Budget:* ${formData.budget}\n\n` +
       `📝 *Requirements:*\n${formData.message}\n\n` +
       `⚡ *Note:* Please reply within 30 minutes as promised on website\n` +
-      `---\nSent from rkdigitalstudio.in website`
+      `---\nSent from rkdigitaistudio.in website`
     );
     const waUrl = `https://wa.me/919519073791?text=${waText}`;
 
