@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leads Management CRM — RK DIGITAL STUDIO</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/admin.css">
+
+  <!-- Supabase CDN Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="admin-body">
+
+  <div class="admin-layout">
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="admin-sidebar-overlay" id="adminSidebarOverlay"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="admin-sidebar-brand">
+        <a href="/admin/">
+          <img src="../assets/logo.svg" alt="RK DIGITAL STUDIO Logo">
+        </a>
+        <span class="admin-badge-role">Admin</span>
+      </div>
+
+      <nav class="admin-sidebar-nav">
+        <span class="nav-section-label">Overview</span>
+        <a href="/admin/" class="admin-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          <span>Dashboard</span>
+        </a>
+
+        <span class="nav-section-label">Portfolio &amp; CMS</span>
+        <a href="/admin/projects.html" class="admin-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+          <span>Projects</span>
+        </a>
+
+        <span class="nav-section-label">Sales &amp; Clients</span>
+        <a href="/admin/leads.html" class="admin-nav-item active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Leads &amp; CRM</span>
+          <span class="admin-nav-badge" id="navLeadsCount">...</span>
+        </a>
+
+        <a href="/admin/followups.html" class="admin-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span>Follow-ups</span>
+        </a>
+
+        <span class="nav-section-label">System</span>
+        <a href="/admin/settings.html" class="admin-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Settings</span>
+        </a>
+
+        <a href="/" target="_blank" rel="noopener noreferrer" class="admin-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <span>View Website ↗</span>
+        </a>
+      </nav>
+
+      <div class="admin-sidebar-footer">
+        <div class="admin-user-avatar">R</div>
+        <div class="admin-user-meta">
+          <div class="admin-user-email">contact@rkdigitaistudio.in</div>
+          <div class="admin-user-role">Studio Admin</div>
+        </div>
+        <button type="button" class="admin-logout-btn" data-admin-logout title="Sign Out">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <div class="admin-topbar-left">
+          <button type="button" class="admin-mobile-toggle" id="adminSidebarToggle" aria-label="Open Sidebar">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+          <div class="admin-breadcrumb">
+            <a href="/admin/">Admin</a>
+            <span>/</span>
+            <span class="active">Leads Management CRM</span>
+          </div>
+        </div>
+
+        <div class="admin-topbar-right">
+          <button type="button" class="btn btn-primary btn-sm" id="btnOpenAddLeadModal">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>Add New Lead</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="admin-content">
+        <div class="page-header">
+          <div>
+            <h1>Lead Management CRM</h1>
+            <p>Track client enquiries, manage sales pipelines, schedule follow-ups, and convert website visitors into customers.</p>
+          </div>
+        </div>
+
+        <!-- Filter Toolbar -->
+        <div class="admin-card" style="margin-bottom: 24px;">
+          <div class="filter-toolbar">
+            <div class="search-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="leadSearchInput" class="search-input" placeholder="Search by client name, phone, email, or business...">
+            </div>
+
+            <select id="leadStatusFilter" class="filter-select">
+              <option value="All">All Statuses</option>
+              <option value="New">New</option>
+              <option value="Contacted">Contacted</option>
+              <option value="Interested">Interested</option>
+              <option value="Proposal Sent">Proposal Sent</option>
+              <option value="Converted">Converted</option>
+              <option value="Lost">Lost</option>
+            </select>
+
+            <select id="leadServiceFilter" class="filter-select">
+              <option value="All">All Services</option>
+              <option value="Business Website">Business Website</option>
+              <option value="School Website">School Website</option>
+              <option value="Coaching Website">Coaching Website</option>
+              <option value="E-commerce Website">E-commerce Website</option>
+              <option value="Website + Enquiry Form">Website + Enquiry Form</option>
+              <option value="Other">Other</option>
+            </select>
+
+            <select id="leadSortFilter" class="filter-select">
+              <option value="newest">Sort: Newest First</option>
+              <option value="oldest">Sort: Oldest First</option>
+              <option value="follow_up">Sort: Follow-up Date</option>
+            </select>
+          </div>
+
+          <!-- Leads Table Container -->
+          <div id="leadsTableContainer">
+            <div class="empty-state">
+              <p>Loading client leads from database...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Lead Detail Slide-Over Drawer -->
+  <div class="admin-drawer-overlay" id="leadDrawerOverlay">
+    <div class="admin-drawer" id="leadDrawer">
+      <div class="drawer-header">
+        <div>
+          <h3 id="drawerLeadName" style="color: #ffffff; font-size: 1.25rem;">Client Details</h3>
+          <span id="drawerLeadCreated" style="font-size: 0.78rem; color: #94a3b8;">Created recently</span>
+        </div>
+        <button type="button" class="modal-close-btn" id="closeLeadDrawerBtn">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="drawer-body">
+        <input type="hidden" id="drawerLeadId">
+
+        <!-- Quick Contact Actions Banner -->
+        <div style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
+          <a id="drawerWaBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-sm" style="flex: 1;">
+            <span>WhatsApp 💬</span>
+          </a>
+          <a id="drawerCallBtn" href="#" class="btn btn-secondary btn-sm" style="flex: 1; border-color: rgba(56, 189, 248, 0.4); color: #38bdf8;">
+            <span>Call 📞</span>
+          </a>
+          <a id="drawerEmailBtn" href="#" class="btn btn-secondary btn-sm" style="flex: 1;">
+            <span>Email ✉️</span>
+          </a>
+        </div>
+
+        <!-- Status & Follow-up Controls -->
+        <div style="background: rgba(0,0,0,0.25); border: 1px solid var(--bg-admin-border); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+          <div class="admin-form-row">
+            <div class="admin-form-group" style="margin-bottom: 0;">
+              <label class="admin-form-label">Lead Status</label>
+              <select id="drawerStatusSelect" class="admin-form-select">
+                <option value="New">New</option>
+                <option value="Contacted">Contacted</option>
+                <option value="Interested">Interested</option>
+                <option value="Proposal Sent">Proposal Sent</option>
+                <option value="Converted">Converted</option>
+                <option value="Lost">Lost</option>
+              </select>
+            </div>
+
+            <div class="admin-form-group" style="margin-bottom: 0;">
+              <label class="admin-form-label">Next Follow-up Date</label>
+              <input type="datetime-local" id="drawerFollowupInput" class="admin-form-input">
+            </div>
+          </div>
+          <button type="button" id="btnSaveStatusFollowup" class="btn btn-primary btn-sm btn-block" style="margin-top: 12px;">
+            Update Status &amp; Schedule
+          </button>
+        </div>
+
+        <!-- Lead Key Info Breakdown -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: rgba(255,255,255,0.02); padding: 14px; border-radius: 10px; border: 1px solid var(--bg-admin-border); font-size: 0.85rem; margin-bottom: 20px;">
+          <div><span style="color:#94a3b8;">Phone:</span> <strong id="drawerPhone" style="color: #38bdf8; display:block;">-</strong></div>
+          <div><span style="color:#94a3b8;">Email:</span> <strong id="drawerEmail" style="color: #cbd5e1; display:block;">-</strong></div>
+          <div><span style="color:#94a3b8;">Business:</span> <strong id="drawerBusiness" style="color: #ffffff; display:block;">-</strong></div>
+          <div><span style="color:#94a3b8;">Service:</span> <strong id="drawerService" style="color: #38bdf8; display:block;">-</strong></div>
+          <div><span style="color:#94a3b8;">Budget:</span> <strong id="drawerBudget" style="color: #34d399; display:block;">-</strong></div>
+          <div><span style="color:#94a3b8;">Source:</span> <strong id="drawerSource" style="color: #cbd5e1; display:block;">-</strong></div>
+        </div>
+
+        <!-- Project Requirements -->
+        <div style="background: rgba(15, 23, 42, 0.6); padding: 14px; border-radius: 8px; border-left: 3px solid #38bdf8; margin-bottom: 24px;">
+          <span style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; display: block; margin-bottom: 4px;">Requirements &amp; Project Description:</span>
+          <p id="drawerRequirements" style="color: #f1f5f9; font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap;"></p>
+        </div>
+
+        <!-- Internal Notes Section -->
+        <div style="margin-bottom: 24px;">
+          <h4 style="font-size: 0.95rem; color: #ffffff; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+            <span>Internal Notes</span>
+            <span id="notesCount" style="font-size: 0.75rem; color: #94a3b8;">0 notes</span>
+          </h4>
+
+          <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+            <input type="text" id="newNoteInput" class="admin-form-input" placeholder="Add an internal note about client conversation..." style="font-size: 0.85rem;">
+            <button type="button" id="btnAddNote" class="btn btn-secondary btn-sm" style="flex-shrink: 0;">Add Note</button>
+          </div>
+
+          <div id="drawerNotesList" style="display: flex; flex-direction: column; gap: 8px;">
+            <!-- Notes injected here -->
+          </div>
+        </div>
+
+        <!-- Activity History Audit Trail -->
+        <div>
+          <h4 style="font-size: 0.95rem; color: #ffffff; margin-bottom: 10px;">Activity &amp; Status History</h4>
+          <div class="activity-timeline" id="drawerActivityTimeline">
+            <!-- Timeline injected here -->
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer" style="justify-content: space-between;">
+        <button type="button" class="btn btn-danger btn-sm" id="btnDeleteLead">Delete Lead</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="btnCloseDrawer">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manual Add Lead Modal Dialog -->
+  <div class="admin-modal-overlay" id="leadModalOverlay">
+    <div class="admin-modal-box">
+      <div class="modal-header">
+        <h3 id="leadModalTitle">Add New Lead</h3>
+        <button type="button" class="modal-close-btn" id="closeLeadModalBtn">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <form id="leadForm" novalidate>
+        <div class="modal-body">
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label for="leadName" class="admin-form-label">Customer Name <span class="req">*</span></label>
+              <input type="text" id="leadName" name="name" class="admin-form-input" placeholder="e.g. Vikas Upadhyay" required>
+            </div>
+            <div class="admin-form-group">
+              <label for="leadPhone" class="admin-form-label">Phone Number <span class="req">*</span></label>
+              <input type="tel" id="leadPhone" name="phone" class="admin-form-input" placeholder="e.g. 9519073791 (10 digits)" required>
+            </div>
+          </div>
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label for="leadEmail" class="admin-form-label">Email Address</label>
+              <input type="email" id="leadEmail" name="email" class="admin-form-input" placeholder="contact@example.com">
+            </div>
+            <div class="admin-form-group">
+              <label for="leadBusiness" class="admin-form-label">Business / School Name</label>
+              <input type="text" id="leadBusiness" name="business_name" class="admin-form-input" placeholder="e.g. Chunar Traders">
+            </div>
+          </div>
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label for="leadService" class="admin-form-label">Requested Service <span class="req">*</span></label>
+              <select id="leadService" name="service" class="admin-form-select" required>
+                <option value="Business Website">Business Website</option>
+                <option value="School Website">School Website</option>
+                <option value="Coaching Website">Coaching Website</option>
+                <option value="E-commerce Website">E-commerce Website</option>
+                <option value="Website + Enquiry Form">Website + Enquiry Form</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="admin-form-group">
+              <label for="leadBudget" class="admin-form-label">Estimated Budget</label>
+              <select id="leadBudget" name="budget" class="admin-form-select">
+                <option value="Below ₹5,000">Below ₹5,000</option>
+                <option value="₹5,000 – ₹10,000" selected>₹5,000 – ₹10,000</option>
+                <option value="₹10,000 – ₹20,000">₹10,000 – ₹20,000</option>
+                <option value="₹20,000+">₹20,000+</option>
+                <option value="Not Specified">Not Specified</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label for="leadSource" class="admin-form-label">Lead Source</label>
+              <select id="leadSource" name="source" class="admin-form-select">
+                <option value="Manual Admin Entry">Manual Admin Entry</option>
+                <option value="WhatsApp Direct">WhatsApp Direct</option>
+                <option value="Phone Call">Phone Call</option>
+                <option value="Local Referral">Local Referral</option>
+                <option value="Website Enquiry Form">Website Enquiry Form</option>
+              </select>
+            </div>
+            <div class="admin-form-group">
+              <label for="leadPriority" class="admin-form-label">Priority</label>
+              <select id="leadPriority" name="priority" class="admin-form-select">
+                <option value="Medium" selected>Medium</option>
+                <option value="High">High</option>
+                <option value="Urgent">Urgent</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="admin-form-group">
+            <label for="leadRequirements" class="admin-form-label">Requirements / Conversation Notes <span class="req">*</span></label>
+            <textarea id="leadRequirements" name="requirements" class="admin-form-textarea" placeholder="Details discussed with client..." required></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="cancelLeadBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveLeadBtn">Save Lead</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/env.js"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="../js/admin-auth.js"></script>
+
+  <script>
+    let currentLeads = [];
+    let activeLeadId = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadLeads();
+
+      const searchInput = document.getElementById('leadSearchInput');
+      const statusFilter = document.getElementById('leadStatusFilter');
+      const serviceFilter = document.getElementById('leadServiceFilter');
+      const sortFilter = document.getElementById('leadSortFilter');
+
+      searchInput.addEventListener('input', debounce(loadLeads, 250));
+      statusFilter.addEventListener('change', loadLeads);
+      serviceFilter.addEventListener('change', loadLeads);
+      sortFilter.addEventListener('change', loadLeads);
+
+      // Manual Lead Modal handling
+      const openModalBtn = document.getElementById('btnOpenAddLeadModal');
+      const leadModal = document.getElementById('leadModalOverlay');
+      const closeLeadBtn = document.getElementById('closeLeadModalBtn');
+      const cancelLeadBtn = document.getElementById('cancelLeadBtn');
+      const leadForm = document.getElementById('leadForm');
+
+      openModalBtn.addEventListener('click', () => {
+        leadForm.reset();
+        leadModal.classList.add('open');
+      });
+      closeLeadBtn.addEventListener('click', () => leadModal.classList.remove('open'));
+      cancelLeadBtn.addEventListener('click', () => leadModal.classList.remove('open'));
+
+      leadForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('leadName').value.trim();
+        const phone = document.getElementById('leadPhone').value.trim();
+        const email = document.getElementById('leadEmail').value.trim();
+        const business_name = document.getElementById('leadBusiness').value.trim();
+        const service = document.getElementById('leadService').value;
+        const budget = document.getElementById('leadBudget').value;
+        const source = document.getElementById('leadSource').value;
+        const priority = document.getElementById('leadPriority').value;
+        const requirements = document.getElementById('leadRequirements').value.trim();
+
+        if (!name || !phone || !requirements) {
+          alert('Please enter Name, Phone, and Requirements.');
+          return;
+        }
+
+        try {
+          const res = await window.RK_CLIENT.saveLead({
+            name, phone, email, business_name, service, budget, source, priority, requirements
+          });
+          if (res.success) {
+            window.RK_AUTH.showToast('Lead recorded in CRM.');
+            leadModal.classList.remove('open');
+            loadLeads();
+          }
+        } catch (err) {
+          alert('Error saving lead: ' + err.message);
+        }
+      });
+
+      // Drawer close handlers
+      const drawerOverlay = document.getElementById('leadDrawerOverlay');
+      const closeDrawerBtn = document.getElementById('closeLeadDrawerBtn');
+      const btnCloseDrawer = document.getElementById('btnCloseDrawer');
+
+      closeDrawerBtn.addEventListener('click', closeDrawer);
+      btnCloseDrawer.addEventListener('click', closeDrawer);
+      drawerOverlay.addEventListener('click', (e) => {
+        if (e.target === drawerOverlay) closeDrawer();
+      });
+
+      // Update status & follow-up from drawer
+      document.getElementById('btnSaveStatusFollowup').addEventListener('click', async () => {
+        if (!activeLeadId) return;
+        const status = document.getElementById('drawerStatusSelect').value;
+        const followup = document.getElementById('drawerFollowupInput').value;
+
+        try {
+          const updatePayload = {
+            id: activeLeadId,
+            status,
+            next_follow_up_at: followup ? new Date(followup).toISOString() : null
+          };
+          await window.RK_CLIENT.saveLead(updatePayload);
+          window.RK_AUTH.showToast('Lead status & follow-up updated.');
+          loadLeads();
+          openLeadDrawer(activeLeadId);
+        } catch (err) {
+          alert('Error: ' + err.message);
+        }
+      });
+
+      // Add Note
+      document.getElementById('btnAddNote').addEventListener('click', async () => {
+        const input = document.getElementById('newNoteInput');
+        const text = input.value.trim();
+        if (!text || !activeLeadId) return;
+
+        try {
+          await window.RK_CLIENT.addLeadNote(activeLeadId, text);
+          input.value = '';
+          window.RK_AUTH.showToast('Note added.');
+          openLeadDrawer(activeLeadId);
+        } catch (err) {
+          alert('Error: ' + err.message);
+        }
+      });
+
+      // Delete Lead
+      document.getElementById('btnDeleteLead').addEventListener('click', () => {
+        if (!activeLeadId) return;
+        window.RK_AUTH.confirmAction({
+          title: 'Delete Lead',
+          message: 'Are you sure you want to delete this lead? This action cannot be undone.',
+          confirmText: 'Delete Lead',
+          isDanger: true,
+          onConfirm: async () => {
+            try {
+              await window.RK_CLIENT.deleteLead(activeLeadId, true);
+              window.RK_AUTH.showToast('Lead removed from CRM.');
+              closeDrawer();
+              loadLeads();
+            } catch (err) {
+              alert('Delete error: ' + err.message);
+            }
+          }
+        });
+      });
+
+      // Check if URL has ?id= to open drawer directly
+      const urlParams = new URLSearchParams(window.location.search);
+      const directId = urlParams.get('id');
+      if (directId) {
+        setTimeout(() => openLeadDrawer(directId), 400);
+      }
+    });
+
+    function closeDrawer() {
+      document.getElementById('leadDrawerOverlay').classList.remove('open');
+      activeLeadId = null;
+    }
+
+    async function loadLeads() {
+      const search = document.getElementById('leadSearchInput').value.trim();
+      const status = document.getElementById('leadStatusFilter').value;
+      const service = document.getElementById('leadServiceFilter').value;
+      const sortBy = document.getElementById('leadSortFilter').value;
+      const container = document.getElementById('leadsTableContainer');
+
+      try {
+        const leads = await window.RK_CLIENT.getLeads({
+          search: search || undefined,
+          status: status !== 'All' ? status : undefined,
+          service: service !== 'All' ? service : undefined,
+          sortBy
+        });
+
+        currentLeads = leads;
+        const navLeads = document.getElementById('navLeadsCount');
+        if (navLeads) navLeads.textContent = leads.length;
+
+        renderLeadsTable(leads);
+      } catch (err) {
+        container.innerHTML = `<div class="empty-state"><p style="color:#ef4444;">Error loading leads: ${err.message}</p></div>`;
+      }
+    }
+
+    function renderLeadsTable(leads) {
+      const container = document.getElementById('leadsTableContainer');
+      if (!leads || leads.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">👥</div>
+            <h4>No leads found</h4>
+            <p>Try adjusting your search filters or click "Add New Lead".</p>
+          </div>
+        `;
+        return;
+      }
+
+      const rows = leads.map(l => {
+        const createdDate = new Date(l.created_at).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        const cleanPhone = window.RK_CLIENT.normalizePhone(l.phone);
+        const statusClass = (l.status || 'new').toLowerCase().replace(/\s+/g, '-');
+        const waMsg = encodeURIComponent(`Hello ${l.name}, thank you for contacting RK DIGITAL STUDIO regarding your ${l.service} requirements.`);
+
+        let followUpDisplay = '<span style="color:#64748b;">Not Set</span>';
+        if (l.next_follow_up_at) {
+          const fDate = new Date(l.next_follow_up_at);
+          const isOverdue = fDate < new Date() && l.status !== 'Converted' && l.status !== 'Lost';
+          const fStr = fDate.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
+          followUpDisplay = `<span style="color: ${isOverdue ? '#f87171' : '#fbbf24'}; font-weight: 500;">${fStr} ${isOverdue ? '⚠️' : ''}</span>`;
+        }
+
+        return `
+          <tr>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="priority-dot priority-${(l.priority || 'medium').toLowerCase()}" title="Priority: ${l.priority}"></span>
+                <strong style="color: #ffffff; font-size: 0.95rem;">${escapeHtml(l.name)}</strong>
+              </div>
+              <div style="font-size: 0.78rem; color: #94a3b8; margin-top: 2px;">
+                <span>${escapeHtml(l.business_name || 'Individual')}</span> • <span>${escapeHtml(l.phone)}</span>
+              </div>
+            </td>
+            <td>
+              <span style="color: #cbd5e1; font-weight: 500;">${escapeHtml(l.service)}</span>
+              <div style="font-size: 0.75rem; color: #34d399;">${escapeHtml(l.budget || '')}</div>
+            </td>
+            <td>
+              <span class="status-badge ${statusClass}">${escapeHtml(l.status)}</span>
+            </td>
+            <td>
+              <span style="font-size: 0.8rem;">${followUpDisplay}</span>
+            </td>
+            <td>
+              <span style="font-size: 0.8rem; color: #94a3b8;">${createdDate}</span>
+            </td>
+            <td>
+              <div class="table-actions">
+                <a href="https://wa.me/91${cleanPhone}?text=${waMsg}" target="_blank" rel="noopener noreferrer" class="action-btn wa" title="Chat on WhatsApp">
+                  WhatsApp
+                </a>
+                <a href="tel:+91${cleanPhone}" class="action-btn call" title="Call">
+                  Call
+                </a>
+                <button type="button" class="action-btn" onclick="openLeadDrawer('${l.id}')">
+                  Details →
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      container.innerHTML = `
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Customer Name</th>
+                <th>Service &amp; Budget</th>
+                <th>Status</th>
+                <th>Follow-up</th>
+                <th>Created</th>
+                <th>Quick Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    async function openLeadDrawer(id) {
+      activeLeadId = id;
+      const { lead, notes, activities } = await window.RK_CLIENT.getLeadById(id);
+      if (!lead) return;
+
+      document.getElementById('drawerLeadId').value = lead.id;
+      document.getElementById('drawerLeadName').textContent = lead.name;
+      document.getElementById('drawerLeadCreated').textContent = `Submitted: ${new Date(lead.created_at).toLocaleString('en-IN')}`;
+
+      // Contact links
+      const cleanPhone = window.RK_CLIENT.normalizePhone(lead.phone);
+      const waMsg = encodeURIComponent(`Hello ${lead.name}, regarding your ${lead.service} website inquiry with RK DIGITAL STUDIO:`);
+      document.getElementById('drawerWaBtn').href = `https://wa.me/91${cleanPhone}?text=${waMsg}`;
+      document.getElementById('drawerCallBtn').href = `tel:+91${cleanPhone}`;
+      document.getElementById('drawerEmailBtn').href = lead.email ? `mailto:${lead.email}` : '#';
+      document.getElementById('drawerEmailBtn').style.display = lead.email ? 'inline-flex' : 'none';
+
+      // Meta
+      document.getElementById('drawerPhone').textContent = lead.phone;
+      document.getElementById('drawerEmail').textContent = lead.email || 'Not Provided';
+      document.getElementById('drawerBusiness').textContent = lead.business_name || 'Individual';
+      document.getElementById('drawerService').textContent = lead.service;
+      document.getElementById('drawerBudget').textContent = lead.budget || 'Not Specified';
+      document.getElementById('drawerSource').textContent = lead.source || 'Website Enquiry Form';
+      document.getElementById('drawerRequirements').textContent = lead.requirements;
+
+      // Status & Followup
+      document.getElementById('drawerStatusSelect').value = lead.status;
+      if (lead.next_follow_up_at) {
+        const localDate = new Date(lead.next_follow_up_at);
+        localDate.setMinutes(localDate.getMinutes() - localDate.getTimezoneOffset());
+        document.getElementById('drawerFollowupInput').value = localDate.toISOString().slice(0, 16);
+      } else {
+        document.getElementById('drawerFollowupInput').value = '';
+      }
+
+      // Notes
+      const notesContainer = document.getElementById('drawerNotesList');
+      document.getElementById('notesCount').textContent = `${notes.length} notes`;
+      if (notes.length === 0) {
+        notesContainer.innerHTML = '<span style="font-size: 0.8rem; color: #64748b;">No internal notes recorded yet.</span>';
+      } else {
+        notesContainer.innerHTML = notes.map(n => `
+          <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.05); padding: 10px 12px; border-radius: 8px;">
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#94a3b8; margin-bottom:4px;">
+              <strong>${escapeHtml(n.author_email || 'Admin')}</strong>
+              <span>${new Date(n.created_at).toLocaleString('en-IN', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })}</span>
+            </div>
+            <p style="font-size:0.85rem; color:#e2e8f0; margin:0;">${escapeHtml(n.note_text)}</p>
+          </div>
+        `).join('');
+      }
+
+      // Activities
+      const timelineContainer = document.getElementById('drawerActivityTimeline');
+      if (activities.length === 0) {
+        timelineContainer.innerHTML = '<span style="font-size: 0.8rem; color: #64748b;">No status changes recorded yet.</span>';
+      } else {
+        timelineContainer.innerHTML = activities.map(a => `
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <strong>${escapeHtml(a.changed_by || 'System')}</strong>
+                <span>${new Date(a.created_at).toLocaleString('en-IN', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })}</span>
+              </div>
+              <div class="timeline-text">
+                ${a.previous_status ? `Changed status from <strong>${escapeHtml(a.previous_status)}</strong> to <strong>${escapeHtml(a.new_status)}</strong>` : `Initial status: <strong>${escapeHtml(a.new_status)}</strong>`}
+                ${a.notes ? `<div style="font-size:0.78rem; color:#94a3b8; margin-top:4px;">${escapeHtml(a.notes)}</div>` : ''}
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      document.getElementById('leadDrawerOverlay').classList.add('open');
+    }
+
+    function debounce(func, wait) {
+      let timeout;
+      return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>

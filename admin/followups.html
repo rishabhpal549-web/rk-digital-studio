@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Follow-ups Management — RK DIGITAL STUDIO</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/admin.css">
+
+  <!-- Supabase CDN Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="admin-body">
+
+  <div class="admin-layout">
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="admin-sidebar-overlay" id="adminSidebarOverlay"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="admin-sidebar-brand">
+        <a href="/admin/">
+          <img src="../assets/logo.svg" alt="RK DIGITAL STUDIO Logo">
+        </a>
+        <span class="admin-badge-role">Admin</span>
+      </div>
+
+      <nav class="admin-sidebar-nav">
+        <span class="nav-section-label">Overview</span>
+        <a href="/admin/" class="admin-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          <span>Dashboard</span>
+        </a>
+
+        <span class="nav-section-label">Portfolio &amp; CMS</span>
+        <a href="/admin/projects.html" class="admin-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+          <span>Projects</span>
+        </a>
+
+        <span class="nav-section-label">Sales &amp; Clients</span>
+        <a href="/admin/leads.html" class="admin-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Leads &amp; CRM</span>
+        </a>
+
+        <a href="/admin/followups.html" class="admin-nav-item active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span>Follow-ups</span>
+          <span class="admin-nav-badge" id="navFollowupsBadge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">...</span>
+        </a>
+
+        <span class="nav-section-label">System</span>
+        <a href="/admin/settings.html" class="admin-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Settings</span>
+        </a>
+
+        <a href="/" target="_blank" rel="noopener noreferrer" class="admin-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <span>View Website ↗</span>
+        </a>
+      </nav>
+
+      <div class="admin-sidebar-footer">
+        <div class="admin-user-avatar">R</div>
+        <div class="admin-user-meta">
+          <div class="admin-user-email">contact@rkdigitaistudio.in</div>
+          <div class="admin-user-role">Studio Admin</div>
+        </div>
+        <button type="button" class="admin-logout-btn" data-admin-logout title="Sign Out">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <div class="admin-topbar-left">
+          <button type="button" class="admin-mobile-toggle" id="adminSidebarToggle" aria-label="Open Sidebar">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+          <div class="admin-breadcrumb">
+            <a href="/admin/">Admin</a>
+            <span>/</span>
+            <span class="active">Follow-ups Management</span>
+          </div>
+        </div>
+
+        <div class="admin-topbar-right">
+          <a href="/admin/leads.html" class="btn btn-secondary btn-sm">
+            <span>View All Leads</span>
+          </a>
+        </div>
+      </header>
+
+      <div class="admin-content">
+        <div class="page-header">
+          <div>
+            <h1>Follow-up Management</h1>
+            <p>Stay on top of every client conversation, schedule calls, and ensure no interested customer slips away.</p>
+          </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div style="display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 1px solid var(--bg-admin-border); padding-bottom: 12px; flex-wrap: wrap;">
+          <button type="button" class="btn btn-primary btn-sm tab-btn active" data-tab="all">All Follow-ups</button>
+          <button type="button" class="btn btn-secondary btn-sm tab-btn" data-tab="overdue">Overdue ⚠️</button>
+          <button type="button" class="btn btn-secondary btn-sm tab-btn" data-tab="today">Due Today ⚡</button>
+          <button type="button" class="btn btn-secondary btn-sm tab-btn" data-tab="upcoming">Upcoming 📅</button>
+        </div>
+
+        <!-- Follow-ups Table Container -->
+        <div class="admin-card">
+          <div id="followupsTableContainer">
+            <div class="empty-state">
+              <p>Loading scheduled follow-ups...</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Reschedule Modal -->
+  <div class="admin-modal-overlay" id="rescheduleModalOverlay">
+    <div class="admin-modal-box">
+      <div class="modal-header">
+        <h3>Schedule / Update Follow-up</h3>
+        <button type="button" class="modal-close-btn" id="closeRescheduleBtn">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="rescheduleLeadId">
+        <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 16px;">
+          Updating follow-up date for <strong id="rescheduleLeadName" style="color: #ffffff;">Client</strong>:
+        </p>
+        <div class="admin-form-group">
+          <label class="admin-form-label">Select Date &amp; Time <span class="req">*</span></label>
+          <input type="datetime-local" id="rescheduleDateTime" class="admin-form-input" required>
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label">Add Note about conversation</label>
+          <textarea id="rescheduleNote" class="admin-form-textarea" placeholder="e.g. Client requested a callback after discussing school budget with management..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="cancelRescheduleBtn">Cancel</button>
+        <button type="button" class="btn btn-primary" id="saveRescheduleBtn">Save Follow-up</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/env.js"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="../js/admin-auth.js"></script>
+
+  <script>
+    let allScheduledLeads = [];
+    let currentTab = 'all';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadFollowups();
+
+      // Tab handlers
+      const tabs = document.querySelectorAll('.tab-btn');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => {
+            t.classList.remove('btn-primary', 'active');
+            t.classList.add('btn-secondary');
+          });
+          tab.classList.remove('btn-secondary');
+          tab.classList.add('btn-primary', 'active');
+          currentTab = tab.getAttribute('data-tab');
+          renderFilteredFollowups();
+        });
+      });
+
+      // Reschedule modal
+      const modal = document.getElementById('rescheduleModalOverlay');
+      const closeBtn = document.getElementById('closeRescheduleBtn');
+      const cancelBtn = document.getElementById('cancelRescheduleBtn');
+      const saveBtn = document.getElementById('saveRescheduleBtn');
+
+      function closeModal() { modal.classList.remove('open'); }
+      closeBtn.addEventListener('click', closeModal);
+      cancelBtn.addEventListener('click', closeModal);
+
+      saveBtn.addEventListener('click', async () => {
+        const leadId = document.getElementById('rescheduleLeadId').value;
+        const dateTime = document.getElementById('rescheduleDateTime').value;
+        const note = document.getElementById('rescheduleNote').value.trim();
+
+        if (!dateTime) {
+          alert('Please select a date and time.');
+          return;
+        }
+
+        try {
+          await window.RK_CLIENT.saveLead({
+            id: leadId,
+            next_follow_up_at: new Date(dateTime).toISOString()
+          });
+
+          if (note) {
+            await window.RK_CLIENT.addLeadNote(leadId, `Follow-up scheduled: ${note}`);
+          }
+
+          window.RK_AUTH.showToast('Follow-up updated successfully.');
+          closeModal();
+          loadFollowups();
+        } catch (err) {
+          alert('Error: ' + err.message);
+        }
+      });
+    });
+
+    async function loadFollowups() {
+      try {
+        const leads = await window.RK_CLIENT.getLeads({ sortBy: 'follow_up' });
+        // filter leads that have a follow-up date and are active
+        allScheduledLeads = leads.filter(l => l.next_follow_up_at && l.status !== 'Converted' && l.status !== 'Lost');
+
+        const navBadge = document.getElementById('navFollowupsBadge');
+        if (navBadge) navBadge.textContent = allScheduledLeads.length;
+
+        renderFilteredFollowups();
+      } catch (err) {
+        document.getElementById('followupsTableContainer').innerHTML = `<div class="empty-state"><p style="color:#ef4444;">Error loading follow-ups: ${err.message}</p></div>`;
+      }
+    }
+
+    function renderFilteredFollowups() {
+      const container = document.getElementById('followupsTableContainer');
+      const now = new Date();
+      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+
+      let filtered = allScheduledLeads;
+
+      if (currentTab === 'overdue') {
+        filtered = allScheduledLeads.filter(l => new Date(l.next_follow_up_at) < now);
+      } else if (currentTab === 'today') {
+        filtered = allScheduledLeads.filter(l => {
+          const d = new Date(l.next_follow_up_at);
+          return d >= startOfToday && d <= endOfToday;
+        });
+      } else if (currentTab === 'upcoming') {
+        filtered = allScheduledLeads.filter(l => new Date(l.next_follow_up_at) > endOfToday);
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🎉</div>
+            <h4>No follow-ups in this view</h4>
+            <p>Great job! All follow-ups in this category are completed or none are scheduled.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const rows = filtered.map(l => {
+        const fDate = new Date(l.next_follow_up_at);
+        const isOverdue = fDate < now;
+        const cleanPhone = window.RK_CLIENT.normalizePhone(l.phone);
+        const statusClass = (l.status || 'new').toLowerCase().replace(/\s+/g, '-');
+        const waMsg = encodeURIComponent(`Hello ${l.name}, following up regarding your ${l.service} inquiry with RK DIGITAL STUDIO:`);
+
+        return `
+          <tr>
+            <td>
+              <strong style="color: #ffffff; font-size: 0.95rem; display: block;">${escapeHtml(l.name)}</strong>
+              <span style="font-size: 0.78rem; color: #94a3b8;">${escapeHtml(l.business_name || 'Individual')}</span>
+            </td>
+            <td>
+              <span style="color: ${isOverdue ? '#f87171' : '#fbbf24'}; font-weight: 600;">
+                ${isOverdue ? '⚠️ ' : '📅 '}
+                ${fDate.toLocaleString('en-IN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+              </span>
+              ${isOverdue ? '<span style="font-size: 0.65rem; background: rgba(239,68,68,0.2); color: #f87171; padding: 1px 6px; border-radius: 4px; font-weight: 700; margin-left: 6px;">OVERDUE</span>' : ''}
+            </td>
+            <td>
+              <span style="color: #cbd5e1; font-weight: 500;">${escapeHtml(l.service)}</span>
+            </td>
+            <td>
+              <span class="status-badge ${statusClass}">${escapeHtml(l.status)}</span>
+            </td>
+            <td>
+              <div class="table-actions">
+                <a href="https://wa.me/91${cleanPhone}?text=${waMsg}" target="_blank" rel="noopener noreferrer" class="action-btn wa" title="Chat on WhatsApp">
+                  WhatsApp
+                </a>
+                <a href="tel:+91${cleanPhone}" class="action-btn call" title="Call">
+                  Call
+                </a>
+                <button type="button" class="action-btn" onclick="openRescheduleModal('${l.id}', '${escapeHtml(l.name)}', '${l.next_follow_up_at}')">
+                  Reschedule
+                </button>
+                <button type="button" class="action-btn" style="color: #34d399;" onclick="handleMarkCompleted('${l.id}', '${escapeHtml(l.name)}')">
+                  ✓ Done
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      container.innerHTML = `
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Customer Name</th>
+                <th>Follow-up Due</th>
+                <th>Requested Service</th>
+                <th>Current Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function openRescheduleModal(id, name, currentDate) {
+      document.getElementById('rescheduleLeadId').value = id;
+      document.getElementById('rescheduleLeadName').textContent = name;
+      document.getElementById('rescheduleNote').value = '';
+
+      if (currentDate) {
+        const localDate = new Date(currentDate);
+        localDate.setMinutes(localDate.getMinutes() - localDate.getTimezoneOffset());
+        document.getElementById('rescheduleDateTime').value = localDate.toISOString().slice(0, 16);
+      }
+
+      document.getElementById('rescheduleModalOverlay').classList.add('open');
+    }
+
+    async function handleMarkCompleted(id, name) {
+      window.RK_AUTH.confirmAction({
+        title: 'Complete Follow-up',
+        message: `Mark follow-up completed for ${name}? You can update the lead's status or schedule another call later.`,
+        confirmText: 'Mark Completed',
+        onConfirm: async () => {
+          try {
+            await window.RK_CLIENT.saveLead({ id, next_follow_up_at: null });
+            await window.RK_CLIENT.addLeadNote(id, 'Scheduled follow-up completed.');
+            window.RK_AUTH.showToast('Follow-up marked completed.');
+            loadFollowups();
+          } catch (err) {
+            alert('Error: ' + err.message);
+          }
+        }
+      });
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>

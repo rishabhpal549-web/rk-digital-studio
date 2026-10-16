@@ -1,6 +1,6 @@
 /**
  * RK DIGITAL STUDIO - Database & Enquiry Notification Handler
- * - Instant Email dispatch to rishabhpal549@gmail.com via FormSubmit AJAX API
+ * - Instant Email dispatch to contact@rkdigitaistudio.in via FormSubmit AJAX API
  * - Direct WhatsApp Click-to-Chat generation (+91 9519073791)
  * - 30-Minute Guaranteed Reply commitment
  * - Resilient offline/local storage queue
@@ -8,17 +8,18 @@
  */
 
 const RK_DB_CONFIG = {
-  notificationEmail: 'rishabhpal549@gmail.com',
-  ownerPhone: '9519073791',
-  supabaseUrl: localStorage.getItem('rk_supabase_url') || window.ENV?.SUPABASE_URL || '',
-  supabaseAnonKey: localStorage.getItem('rk_supabase_key') || window.ENV?.SUPABASE_ANON_KEY || '',
+  notificationEmail: window.ENV?.NOTIFICATION_EMAIL || window.ENV?.CONTACT_EMAIL || 'contact@rkdigitaistudio.in',
+  backupEmail: 'rishabhpal549@gmail.com',
+  ownerPhone: window.ENV?.OWNER_PHONE || '9519073791',
+  supabaseUrl: localStorage.getItem('rk_supabase_url') || window.ENV?.SUPABASE_URL || window.ENV?.NEXT_PUBLIC_SUPABASE_URL || '',
+  supabaseAnonKey: localStorage.getItem('rk_supabase_key') || window.ENV?.SUPABASE_ANON_KEY || window.ENV?.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
   tableName: 'enquiries',
   localStorageKey: 'rk_digital_studio_enquiries_log'
 };
 
 /**
- * Dispatches the enquiry details directly to the owner's Gmail via FormSubmit.
- * FormSubmit delivers free emails directly to rishabhpal549@gmail.com.
+ * Dispatches the enquiry details directly to studio inbox via FormSubmit.
+ * FormSubmit delivers free emails directly to contact@rkdigitaistudio.in.
  * @param {Object} payload 
  * @returns {Promise<{success: boolean, message?: string}>}
  */

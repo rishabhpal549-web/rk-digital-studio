@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Settings — RK DIGITAL STUDIO</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/admin.css">
+
+  <!-- Supabase CDN Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="admin-body">
+
+  <div class="admin-layout">
+    <div class="admin-sidebar-overlay" id="adminSidebarOverlay"></div>
+
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="admin-sidebar-brand">
+        <a href="/admin/">
+          <img src="../assets/logo.svg" alt="RK DIGITAL STUDIO Logo">
+        </a>
+        <span class="admin-badge-role">Admin</span>
+      </div>
+
+      <nav class="admin-sidebar-nav">
+        <span class="nav-section-label">Overview</span>
+        <a href="/admin/" class="admin-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          <span>Dashboard</span>
+        </a>
+
+        <span class="nav-section-label">Portfolio &amp; CMS</span>
+        <a href="/admin/projects.html" class="admin-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+          <span>Projects</span>
+        </a>
+
+        <span class="nav-section-label">Sales &amp; Clients</span>
+        <a href="/admin/leads.html" class="admin-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Leads &amp; CRM</span>
+        </a>
+
+        <a href="/admin/followups.html" class="admin-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span>Follow-ups</span>
+        </a>
+
+        <span class="nav-section-label">System</span>
+        <a href="/admin/settings.html" class="admin-nav-item active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Settings</span>
+        </a>
+
+        <a href="/" target="_blank" rel="noopener noreferrer" class="admin-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <span>View Website ↗</span>
+        </a>
+      </nav>
+
+      <div class="admin-sidebar-footer">
+        <div class="admin-user-avatar">R</div>
+        <div class="admin-user-meta">
+          <div class="admin-user-email">contact@rkdigitaistudio.in</div>
+          <div class="admin-user-role">Studio Admin</div>
+        </div>
+        <button type="button" class="admin-logout-btn" data-admin-logout title="Sign Out">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        </button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <div class="admin-topbar-left">
+          <button type="button" class="admin-mobile-toggle" id="adminSidebarToggle" aria-label="Open Sidebar">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+          <div class="admin-breadcrumb">
+            <a href="/admin/">Admin</a>
+            <span>/</span>
+            <span class="active">Settings &amp; Database</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="admin-content">
+        <div class="page-header">
+          <div>
+            <h1>Settings &amp; Infrastructure</h1>
+            <p>Manage Supabase cloud connection, database keys, backup exports, and security configuration.</p>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px;">
+          
+          <!-- 1. Supabase Cloud Database Configuration -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <div class="admin-card-title">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#38bdf8" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                <span>Supabase Cloud Integration</span>
+              </div>
+              <span id="connStatusBadge" class="status-badge new">Checking...</span>
+            </div>
+
+            <div style="padding: 24px;">
+              <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 16px; line-height: 1.5;">
+                Connect your PostgreSQL database hosted on Supabase. Enquiries, leads, and portfolio projects sync securely using Row Level Security (RLS).
+              </p>
+
+              <form id="supabaseSettingsForm">
+                <div class="admin-form-group">
+                  <label for="settingsSupabaseUrl" class="admin-form-label">
+                    Supabase Project URL <span class="req">*</span>
+                  </label>
+                  <input type="url" id="settingsSupabaseUrl" class="admin-form-input" placeholder="https://your-project.supabase.co" required>
+                  <span style="font-size: 0.75rem; color: #64748b; margin-top: 4px; display: block;">Found in Supabase Dashboard → Settings → API → Project URL</span>
+                </div>
+
+                <div class="admin-form-group">
+                  <label for="settingsSupabaseKey" class="admin-form-label">
+                    Supabase Anon Public Key (Publishable) <span class="req">*</span>
+                  </label>
+                  <input type="text" id="settingsSupabaseKey" class="admin-form-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6..." required>
+                  <span style="font-size: 0.75rem; color: #64748b; margin-top: 4px; display: block;">Found in Supabase Dashboard → Settings → API → Project API keys → <strong>anon public</strong></span>
+                </div>
+
+                <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 8px; padding: 12px; margin-bottom: 20px;">
+                  <strong style="color: #fcd34d; font-size: 0.8rem; display: block; margin-bottom: 2px;">🔒 Security Notice:</strong>
+                  <span style="color: #cbd5e1; font-size: 0.78rem;">Never enter or expose your <code>service_role</code> secret key here. Only the public <code>anon</code> key is safe for frontend client execution.</span>
+                </div>
+
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                  <button type="submit" id="btnSaveSupabase" class="btn btn-primary btn-sm">
+                    <span>Save &amp; Test Connection</span>
+                  </button>
+                  <button type="button" id="btnDisconnectSupabase" class="btn btn-secondary btn-sm" style="color: #ef4444;">
+                    <span>Disconnect</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- 2. Data Backup & Export -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <div class="admin-card-title">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#34d399" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span>Backup &amp; Export Data</span>
+              </div>
+            </div>
+
+            <div style="padding: 24px;">
+              <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 20px; line-height: 1.5;">
+                Download your client contacts and portfolio records at any time. Keeps your customer database portable and offline-accessible.
+              </p>
+
+              <div style="display: flex; flex-direction: column; gap: 14px;">
+                <div style="background: rgba(0,0,0,0.25); border: 1px solid var(--bg-admin-border); border-radius: 10px; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <strong style="color: #ffffff; font-size: 0.95rem; display: block;">Export All Leads (CSV)</strong>
+                    <span style="font-size: 0.78rem; color: #94a3b8;">Compatible with Microsoft Excel, Google Sheets, and CRM tools.</span>
+                  </div>
+                  <button type="button" id="btnExportLeadsCsv" class="btn btn-secondary btn-sm">Download CSV</button>
+                </div>
+
+                <div style="background: rgba(0,0,0,0.25); border: 1px solid var(--bg-admin-border); border-radius: 10px; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <strong style="color: #ffffff; font-size: 0.95rem; display: block;">Export Projects (JSON)</strong>
+                    <span style="font-size: 0.78rem; color: #94a3b8;">Full portfolio dataset including image URLs and descriptions.</span>
+                  </div>
+                  <button type="button" id="btnExportProjectsJson" class="btn btn-secondary btn-sm">Download JSON</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 3. Business Profile Summary & Studio Details -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#a855f7" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              <span>Studio Profile &amp; Contact Information</span>
+            </div>
+          </div>
+
+          <div style="padding: 24px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; font-size: 0.9rem;">
+              <div style="background: rgba(0,0,0,0.2); padding: 14px; border-radius: 8px;">
+                <span style="color: #94a3b8; font-size: 0.78rem; text-transform: uppercase;">Business Name:</span>
+                <strong style="color: #fff; display: block; margin-top: 4px;">RK DIGITAL STUDIO</strong>
+              </div>
+              <div style="background: rgba(0,0,0,0.2); padding: 14px; border-radius: 8px;">
+                <span style="color: #94a3b8; font-size: 0.78rem; text-transform: uppercase;">Founder / Lead Developer:</span>
+                <strong style="color: #fff; display: block; margin-top: 4px;">Rishabh Pal</strong>
+              </div>
+              <div style="background: rgba(0,0,0,0.2); padding: 14px; border-radius: 8px;">
+                <span style="color: #94a3b8; font-size: 0.78rem; text-transform: uppercase;">Studio Location:</span>
+                <strong style="color: #fff; display: block; margin-top: 4px;">Chunar, Mirzapur, Uttar Pradesh, India</strong>
+              </div>
+              <div style="background: rgba(0,0,0,0.2); padding: 14px; border-radius: 8px;">
+                <span style="color: #94a3b8; font-size: 0.78rem; text-transform: uppercase;">Official Contact:</span>
+                <strong style="color: #fff; display: block; margin-top: 4px;">+91 95190 73791 / contact@rkdigitaistudio.in</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/env.js"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="../js/admin-auth.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const config = window.RK_CLIENT.getSavedConfig();
+      const urlInput = document.getElementById('settingsSupabaseUrl');
+      const keyInput = document.getElementById('settingsSupabaseKey');
+      const badge = document.getElementById('connStatusBadge');
+
+      if (config.url) urlInput.value = config.url;
+      if (config.key) keyInput.value = config.key;
+
+      updateStatusBadge();
+
+      // Form Submit: Save & Test
+      document.getElementById('supabaseSettingsForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const saveBtn = document.getElementById('btnSaveSupabase');
+        const url = urlInput.value.trim();
+        const key = keyInput.value.trim();
+
+        if (!url || !key) {
+          alert('Please enter both Supabase URL and Anon Key.');
+          return;
+        }
+
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Testing connection...';
+
+        try {
+          window.RK_CLIENT.setConfig(url, key);
+          const testRes = await window.RK_CLIENT.testConnection(url, key);
+
+          if (testRes.ok) {
+            window.RK_AUTH.showToast('✅ Supabase connected & verified successfully!');
+          } else {
+            window.RK_AUTH.showToast('⚠️ Keys saved, but connection returned status: ' + testRes.status, 'error');
+          }
+          updateStatusBadge();
+        } catch (err) {
+          alert('Connection test failed: ' + err.message);
+        } finally {
+          saveBtn.disabled = false;
+          saveBtn.textContent = 'Save & Test Connection';
+        }
+      });
+
+      // Disconnect
+      document.getElementById('btnDisconnectSupabase').addEventListener('click', () => {
+        window.RK_AUTH.confirmAction({
+          title: 'Disconnect Supabase',
+          message: 'Are you sure you want to disconnect Supabase credentials from this browser session?',
+          confirmText: 'Disconnect',
+          isDanger: true,
+          onConfirm: () => {
+            window.RK_CLIENT.disconnect();
+            urlInput.value = '';
+            keyInput.value = '';
+            updateStatusBadge();
+            window.RK_AUTH.showToast('Supabase disconnected. Switched to offline queue mode.');
+          }
+        });
+      });
+
+      // Export CSV
+      document.getElementById('btnExportLeadsCsv').addEventListener('click', async () => {
+        const leads = await window.RK_CLIENT.getLeads();
+        if (!leads.length) {
+          alert('No leads available to export.');
+          return;
+        }
+
+        const headers = ['ID', 'Name', 'Phone', 'Email', 'Business', 'Service', 'Budget', 'Status', 'Priority', 'Source', 'Created At'];
+        const csvRows = [headers.join(',')];
+
+        leads.forEach(l => {
+          const row = [
+            `"${l.id || ''}"`,
+            `"${(l.name || '').replace(/"/g, '""')}"`,
+            `"${l.phone || ''}"`,
+            `"${l.email || ''}"`,
+            `"${(l.business_name || '').replace(/"/g, '""')}"`,
+            `"${l.service || ''}"`,
+            `"${l.budget || ''}"`,
+            `"${l.status || ''}"`,
+            `"${l.priority || ''}"`,
+            `"${l.source || ''}"`,
+            `"${l.created_at || ''}"`
+          ];
+          csvRows.push(row.join(','));
+        });
+
+        const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `rk_digital_studio_leads_${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+        window.RK_AUTH.showToast('Leads CSV downloaded.');
+      });
+
+      // Export JSON
+      document.getElementById('btnExportProjectsJson').addEventListener('click', async () => {
+        const projects = await window.RK_CLIENT.getProjects();
+        const blob = new Blob([JSON.stringify(projects, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `rk_digital_studio_projects_${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        window.RK_AUTH.showToast('Projects JSON downloaded.');
+      });
+
+      function updateStatusBadge() {
+        if (window.RK_CLIENT.isConfigured()) {
+          badge.className = 'status-badge published';
+          badge.textContent = 'Connected & Active';
+        } else {
+          badge.className = 'status-badge draft';
+          badge.textContent = 'Offline / Local Queue';
+        }
+      }
+    });
+  </script>
+</body>
+</html>

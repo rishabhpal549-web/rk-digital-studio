@@ -3,6 +3,34 @@
   "trailingSlash": false,
   "rewrites": [
     {
+      "source": "/admin.html",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/admin/login",
+      "destination": "/admin/login.html"
+    },
+    {
+      "source": "/admin/projects",
+      "destination": "/admin/projects.html"
+    },
+    {
+      "source": "/admin/leads",
+      "destination": "/admin/leads.html"
+    },
+    {
+      "source": "/admin/followups",
+      "destination": "/admin/followups.html"
+    },
+    {
+      "source": "/admin/settings",
+      "destination": "/admin/settings.html"
+    },
+    {
       "source": "/google0b1c602e12dd4b99.html",
       "destination": "/google0b1c602e12dd4b99.html"
     },

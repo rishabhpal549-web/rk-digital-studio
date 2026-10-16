@@ -27,16 +27,17 @@ RK DIGITAL STUDIO is a modern website development and digital solutions studio b
 - **Instagram Profile:** [instagram.com/digita.withr](https://www.instagram.com/digita.withr)
 - **YouTube Channel:** [youtube.com/@RKDigitalStudio-h2f](https://www.youtube.com/@RKDigitalStudio-h2f)
 - **WhatsApp Support:** [+91 95190 73791](https://wa.me/919519073791)
-- **Direct Email:** [rishabhpal549@gmail.com](mailto:rishabhpal549@gmail.com)
+- **Direct Email:** [contact@rkdigitaistudio.in](mailto:contact@rkdigitaistudio.in)
 
 ---
 
 ## 🛠️ Technology Stack
 
 - **Frontend:** Semantic HTML5, Modern Vanilla CSS (Design Tokens, Glassmorphism, CSS Grid & Flexbox, Accessible States)
+- **Admin Panel & CRM:** Supabase Auth, Row Level Security (RLS), Realtime CRM Lead Management, Dynamic CMS Portfolio
 - **Interactions:** Vanilla JavaScript ES6+ (Scroll Spy, Modal Dialogs, Phone Validation, Form Dispatcher)
-- **Database & Enquiries:** Supabase REST API & PostgreSQL (`schema.sql`), FormSubmit Email Dispatcher
-- **Deployment:** Vercel & GitHub Static Hosting
+- **Database & Storage:** Supabase PostgreSQL (`schema.sql`), Storage Buckets (`project-images`), FormSubmit Fallback
+- **Deployment:** Vercel & GitHub Static Hosting with clean URL rewrites
 
 ---
 
@@ -44,29 +45,29 @@ RK DIGITAL STUDIO is a modern website development and digital solutions studio b
 
 ```
 rk-digital-studio/
-├── index.html                   # Core semantic landing page
-├── vercel.json                  # Vercel caching and clean URL configuration
+├── index.html                   # Core semantic landing page & live dynamic portfolio
+├── vercel.json                  # Caching, security headers & admin route rewrites
 ├── sitemap.xml                  # Canonical XML sitemap (12 URLs)
-├── robots.txt                   # Search crawler directives
-├── schema.sql                   # Supabase database schema for enquiries
+├── robots.txt                   # Search crawler directives (with /admin protected)
+├── schema.sql                   # Master PostgreSQL database schema with RLS & storage
+├── SETUP_ADMIN.md               # Complete Supabase setup & Admin Panel deployment guide
+├── admin/                       # Secure Admin Panel & Management Suite
+│   ├── index.html               # Admin Dashboard (real-time KPIs & recent enquiries)
+│   ├── login.html               # Admin Login with Supabase Auth
+│   ├── projects.html            # Portfolio CMS (Add, Edit, Publish, Cover upload)
+│   ├── leads.html               # Leads CRM (Filters, drawer, notes, audit trail)
+│   ├── followups.html           # Follow-up scheduler & overdue tracker
+│   └── settings.html            # Supabase connection manager & CSV/JSON export
 ├── css/
-│   └── styles.css               # Design system, accessible states & responsive layouts
+│   ├── styles.css               # Design system & responsive layouts
+│   └── admin.css                # Dark-mode Admin suite styling & components
 ├── js/
-│   ├── app.js                   # Application interactivity & verified form submission
-│   └── supabase-config.js       # Database handler & local queue
+│   ├── app.js                   # Application interactivity, dynamic portfolio, form handler
+│   ├── admin-auth.js            # Session guard, authentication & dialogs
+│   ├── supabase-client.js       # Supabase Database & Storage API client
+│   └── supabase-config.js       # Email notification dispatcher & backup queue
 ├── services/                    # Dedicated SEO Service Pages
-│   ├── business-website-development.html
-│   ├── school-website-development.html
-│   ├── coaching-website-development.html
-│   ├── ecommerce-website-development.html
-│   └── website-enquiry-forms.html
 ├── blog/                        # SEO & Learning Hub
-│   ├── index.html               # Article index
-│   ├── how-to-create-a-business-website.html
-│   ├── why-schools-need-a-website.html
-│   ├── how-seo-helps-small-businesses.html
-│   ├── website-design-vs-digital-marketing.html
-│   └── how-to-choose-a-website-for-a-coaching-institute.html
 └── assets/                      # Optimized image and SVG assets
 ```
 

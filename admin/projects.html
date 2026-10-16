@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Management CMS — RK DIGITAL STUDIO</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/admin.css">
+
+  <!-- Supabase CDN Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="admin-body">
+
+  <div class="admin-layout">
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="admin-sidebar-overlay" id="adminSidebarOverlay"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="admin-sidebar-brand">
+        <a href="/admin/">
+          <img src="../assets/logo.svg" alt="RK DIGITAL STUDIO Logo">
+        </a>
+        <span class="admin-badge-role">Admin</span>
+      </div>
+
+      <nav class="admin-sidebar-nav">
+        <span class="nav-section-label">Overview</span>
+        <a href="/admin/" class="admin-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          <span>Dashboard</span>
+        </a>
+
+        <span class="nav-section-label">Portfolio &amp; CMS</span>
+        <a href="/admin/projects.html" class="admin-nav-item active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+          <span>Projects</span>
+          <span class="admin-nav-badge" id="navProjectsCount">...</span>
+        </a>
+
+        <span class="nav-section-label">Sales &amp; Clients</span>
+        <a href="/admin/leads.html" class="admin-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Leads &amp; CRM</span>
+          <span class="admin-nav-badge" id="navLeadsCount">...</span>
+        </a>
+
+        <a href="/admin/followups.html" class="admin-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span>Follow-ups</span>
+        </a>
+
+        <span class="nav-section-label">System</span>
+        <a href="/admin/settings.html" class="admin-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Settings</span>
+        </a>
+
+        <a href="/#portfolio" target="_blank" rel="noopener noreferrer" class="admin-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <span>Live Portfolio ↗</span>
+        </a>
+      </nav>
+
+      <div class="admin-sidebar-footer">
+        <div class="admin-user-avatar">R</div>
+        <div class="admin-user-meta">
+          <div class="admin-user-email">contact@rkdigitaistudio.in</div>
+          <div class="admin-user-role">Studio Admin</div>
+        </div>
+        <button type="button" class="admin-logout-btn" data-admin-logout title="Sign Out">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <div class="admin-topbar-left">
+          <button type="button" class="admin-mobile-toggle" id="adminSidebarToggle" aria-label="Open Sidebar">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+          <div class="admin-breadcrumb">
+            <a href="/admin/">Admin</a>
+            <span>/</span>
+            <span class="active">Portfolio CMS</span>
+          </div>
+        </div>
+
+        <div class="admin-topbar-right">
+          <button type="button" class="btn btn-primary btn-sm" id="btnOpenAddProjectModal">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>Add New Project</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="admin-content">
+        <div class="page-header">
+          <div>
+            <h1>Project Management CMS</h1>
+            <p>Publish client case studies, live websites, and practice prototypes directly to the public portfolio.</p>
+          </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="admin-card" style="margin-bottom: 24px;">
+          <div class="filter-toolbar">
+            <div class="search-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="projectSearchInput" class="search-input" placeholder="Search by project name, client, or description...">
+            </div>
+
+            <select id="projectCategoryFilter" class="filter-select">
+              <option value="All">All Categories</option>
+              <option value="School Website">School Website</option>
+              <option value="Coaching Website">Coaching Website</option>
+              <option value="Business Website">Business Website</option>
+              <option value="E-commerce Website">E-commerce Website</option>
+              <option value="Other">Other</option>
+            </select>
+
+            <select id="projectStatusFilter" class="filter-select">
+              <option value="All">All Statuses</option>
+              <option value="published">Published</option>
+              <option value="draft">Draft</option>
+              <option value="archived">Archived</option>
+            </select>
+          </div>
+
+          <!-- Projects Table Container -->
+          <div id="projectsTableContainer">
+            <div class="empty-state">
+              <p>Loading projects database...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add/Edit Project Modal Dialog -->
+  <div class="admin-modal-overlay" id="projectModalOverlay">
+    <div class="admin-modal-box large">
+      <div class="modal-header">
+        <h3 id="projectModalTitle">Add New Project</h3>
+        <button type="button" class="modal-close-btn" id="closeProjectModalBtn">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <form id="projectForm" novalidate>
+        <div class="modal-body">
+          <input type="hidden" id="projectId" name="id">
+
+          <!-- Row 1: Title & Slug -->
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label for="projectTitle" class="admin-form-label">
+                Project Title <span class="req">*</span>
+              </label>
+              <input type="text" id="projectTitle" name="title" class="admin-form-input" placeholder="e.g. Sunbeam English School Bhagwanpur" required>
+            </div>
+
+            <div class="admin-form-group">
+              <label for="projectSlug" class="admin-form-label">
+                URL Slug <span class="req">*</span>
+              </label>
+              <input type="text" id="projectSlug" name="slug" class="admin-form-input" placeholder="e.g. sunbeam-english-school-bhagwanpur" required>
+            </div>
+          </div>
+
+          <!-- Row 2: Category, Client Name, Status -->
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label for="projectCategory" class="admin-form-label">
+                Category <span class="req">*</span>
+              </label>
+              <select id="projectCategory" name="category" class="admin-form-select" required>
+                <option value="School Website">School Website</option>
+                <option value="Coaching Website">Coaching Website</option>
+                <option value="Business Website">Business Website</option>
+                <option value="E-commerce Website">E-commerce Website</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="admin-form-group">
+              <label for="projectClient" class="admin-form-label">
+                Client / Organization
+              </label>
+              <input type="text" id="projectClient" name="client_name" class="admin-form-input" placeholder="e.g. Sunbeam English School">
+            </div>
+
+            <div class="admin-form-group">
+              <label for="projectStatus" class="admin-form-label">
+                Publication Status <span class="req">*</span>
+              </label>
+              <select id="projectStatus" name="status" class="admin-form-select" required>
+                <option value="published">Published (Visible on site)</option>
+                <option value="draft">Draft (Hidden)</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Row 3: Live Website URL & Featured Toggle -->
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label for="projectLiveUrl" class="admin-form-label">
+                Live Website URL
+              </label>
+              <input type="url" id="projectLiveUrl" name="live_url" class="admin-form-input" placeholder="https://example.com">
+            </div>
+
+            <div class="admin-form-group" style="display: flex; align-items: flex-end; padding-bottom: 8px;">
+              <label class="admin-checkbox-group">
+                <input type="checkbox" id="projectFeatured" name="is_featured">
+                <span style="font-weight: 600; color: #fcd34d;">★ Feature as Top Showcase Project</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Cover Image Upload & URL -->
+          <div class="admin-form-group">
+            <label class="admin-form-label">
+              Project Cover Image <span class="req">*</span>
+            </label>
+            
+            <div class="image-dropzone" id="imageDropzone">
+              <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#38bdf8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <p style="font-size: 0.9rem; color: #cbd5e1; margin: 8px 0 4px;">Click to upload image or drag &amp; drop</p>
+              <span style="font-size: 0.75rem; color: #64748b;">PNG, JPG, WebP up to 5MB (Uploaded securely to Supabase Storage)</span>
+              <input type="file" id="coverImageFile" accept="image/*" style="display: none;">
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+              <span style="font-size: 0.8rem; color: #64748b;">Or enter Image URL / Local path:</span>
+              <input type="text" id="projectCoverUrl" name="cover_image_url" class="admin-form-input" placeholder="assets/sunbeam-school-preview.jpg" style="padding: 6px 10px; font-size: 0.82rem;" required>
+            </div>
+
+            <div id="imagePreviewBox" style="display: none; margin-top: 10px; text-align: center;">
+              <img id="imagePreview" src="" alt="Preview" class="image-dropzone-preview">
+            </div>
+          </div>
+
+          <!-- Short Description -->
+          <div class="admin-form-group">
+            <label for="projectShortDesc" class="admin-form-label">
+              Short Description (Card Summary) <span class="req">*</span>
+            </label>
+            <input type="text" id="projectShortDesc" name="short_description" class="admin-form-input" placeholder="1-2 sentences summarizing the project for the portfolio card" required>
+          </div>
+
+          <!-- Full Description -->
+          <div class="admin-form-group">
+            <label for="projectDesc" class="admin-form-label">
+              Full Description / Case Study
+            </label>
+            <textarea id="projectDesc" name="description" class="admin-form-textarea" placeholder="Detailed description of client needs, technology used, features built, and results..."></textarea>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="cancelProjectBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveProjectBtn">
+            <span id="saveProjectBtnText">Save Project</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/env.js"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="../js/admin-auth.js"></script>
+
+  <script>
+    let currentProjects = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProjects();
+
+      // Filter events
+      const searchInput = document.getElementById('projectSearchInput');
+      const categoryFilter = document.getElementById('projectCategoryFilter');
+      const statusFilter = document.getElementById('projectStatusFilter');
+
+      searchInput.addEventListener('input', debounce(loadProjects, 250));
+      categoryFilter.addEventListener('change', loadProjects);
+      statusFilter.addEventListener('change', loadProjects);
+
+      // Modal handling
+      const openModalBtn = document.getElementById('btnOpenAddProjectModal');
+      const modal = document.getElementById('projectModalOverlay');
+      const closeBtn = document.getElementById('closeProjectModalBtn');
+      const cancelBtn = document.getElementById('cancelProjectBtn');
+      const projectForm = document.getElementById('projectForm');
+      const titleInput = document.getElementById('projectTitle');
+      const slugInput = document.getElementById('projectSlug');
+      const dropzone = document.getElementById('imageDropzone');
+      const fileInput = document.getElementById('coverImageFile');
+      const coverUrlInput = document.getElementById('projectCoverUrl');
+      const previewBox = document.getElementById('imagePreviewBox');
+      const previewImg = document.getElementById('imagePreview');
+
+      // Auto-generate slug from title
+      titleInput.addEventListener('input', () => {
+        const currentId = document.getElementById('projectId').value;
+        if (!currentId) {
+          slugInput.value = window.RK_CLIENT.slugify(titleInput.value);
+        }
+      });
+
+      // Cover image file picker
+      dropzone.addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (file.size > 5 * 1024 * 1024) {
+          alert('File size exceeds 5MB limit. Please choose a smaller image.');
+          return;
+        }
+
+        dropzone.style.opacity = '0.5';
+        try {
+          const res = await window.RK_CLIENT.uploadProjectImage(file);
+          if (res?.url) {
+            coverUrlInput.value = res.url;
+            previewImg.src = res.url;
+            previewBox.style.display = 'block';
+            window.RK_AUTH.showToast('Cover image selected.');
+          }
+        } catch (err) {
+          alert('Failed to upload image: ' + err.message);
+        } finally {
+          dropzone.style.opacity = '1';
+        }
+      });
+
+      coverUrlInput.addEventListener('input', () => {
+        const url = coverUrlInput.value.trim();
+        if (url) {
+          previewImg.src = url.startsWith('http') || url.startsWith('assets/') ? (url.startsWith('assets/') ? `../${url}` : url) : url;
+          previewBox.style.display = 'block';
+        } else {
+          previewBox.style.display = 'none';
+        }
+      });
+
+      function openModal(project = null) {
+        projectForm.reset();
+        previewBox.style.display = 'none';
+
+        if (project) {
+          document.getElementById('projectModalTitle').textContent = 'Edit Project Details';
+          document.getElementById('projectId').value = project.id;
+          document.getElementById('projectTitle').value = project.title || '';
+          document.getElementById('projectSlug').value = project.slug || '';
+          document.getElementById('projectCategory').value = project.category || 'School Website';
+          document.getElementById('projectClient').value = project.client_name || '';
+          document.getElementById('projectStatus').value = project.status || 'published';
+          document.getElementById('projectLiveUrl').value = project.live_url || '';
+          document.getElementById('projectFeatured').checked = !!project.is_featured;
+          document.getElementById('projectShortDesc').value = project.short_description || '';
+          document.getElementById('projectDesc').value = project.description || '';
+          document.getElementById('projectCoverUrl').value = project.cover_image_url || '';
+
+          if (project.cover_image_url) {
+            const src = project.cover_image_url.startsWith('http') || project.cover_image_url.startsWith('assets/')
+              ? (project.cover_image_url.startsWith('assets/') ? `../${project.cover_image_url}` : project.cover_image_url)
+              : project.cover_image_url;
+            previewImg.src = src;
+            previewBox.style.display = 'block';
+          }
+        } else {
+          document.getElementById('projectModalTitle').textContent = 'Add New Project';
+          document.getElementById('projectId').value = '';
+          document.getElementById('projectStatus').value = 'published';
+        }
+
+        modal.classList.add('open');
+      }
+
+      function closeModal() {
+        modal.classList.remove('open');
+      }
+
+      openModalBtn.addEventListener('click', () => openModal());
+      closeBtn.addEventListener('click', closeModal);
+      cancelBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+
+      // Check URL params for direct action
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('action') === 'new') {
+        openModal();
+      }
+
+      // Save Project Form
+      projectForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const saveBtn = document.getElementById('saveProjectBtn');
+        const saveBtnText = document.getElementById('saveProjectBtnText');
+
+        const title = document.getElementById('projectTitle').value.trim();
+        const slug = document.getElementById('projectSlug').value.trim();
+        const category = document.getElementById('projectCategory').value;
+        const client_name = document.getElementById('projectClient').value.trim();
+        const status = document.getElementById('projectStatus').value;
+        const live_url = document.getElementById('projectLiveUrl').value.trim();
+        const is_featured = document.getElementById('projectFeatured').checked;
+        const cover_image_url = document.getElementById('projectCoverUrl').value.trim();
+        const short_description = document.getElementById('projectShortDesc').value.trim();
+        const description = document.getElementById('projectDesc').value.trim();
+        const id = document.getElementById('projectId').value;
+
+        if (!title || !slug || !cover_image_url || !short_description) {
+          alert('Please fill out all required fields marked with *');
+          return;
+        }
+
+        saveBtn.disabled = true;
+        saveBtnText.textContent = 'Saving...';
+
+        try {
+          const payload = {
+            id: id || undefined,
+            title,
+            slug,
+            category,
+            client_name: client_name || null,
+            status,
+            live_url: live_url || null,
+            is_featured,
+            cover_image_url,
+            short_description,
+            description: description || null
+          };
+
+          const res = await window.RK_CLIENT.saveProject(payload);
+          if (res.success) {
+            window.RK_AUTH.showToast(id ? 'Project updated successfully!' : 'New project published!');
+            closeModal();
+            loadProjects();
+          } else {
+            alert('Failed to save project: ' + (res.message || 'Unknown error'));
+          }
+        } catch (err) {
+          alert('Error: ' + err.message);
+        } finally {
+          saveBtn.disabled = false;
+          saveBtnText.textContent = 'Save Project';
+        }
+      });
+    });
+
+    async function loadProjects() {
+      const search = document.getElementById('projectSearchInput').value.trim();
+      const category = document.getElementById('projectCategoryFilter').value;
+      const status = document.getElementById('projectStatusFilter').value;
+      const container = document.getElementById('projectsTableContainer');
+
+      try {
+        const projects = await window.RK_CLIENT.getProjects({
+          search: search || undefined,
+          category: category !== 'All' ? category : undefined,
+          status: status !== 'All' ? status : undefined,
+          includeDeleted: false
+        });
+
+        currentProjects = projects;
+        const navProjects = document.getElementById('navProjectsCount');
+        if (navProjects) navProjects.textContent = projects.length;
+
+        renderProjectsTable(projects);
+      } catch (err) {
+        container.innerHTML = `<div class="empty-state"><p style="color:#ef4444;">Error loading projects: ${err.message}</p></div>`;
+      }
+    }
+
+    function renderProjectsTable(projects) {
+      const container = document.getElementById('projectsTableContainer');
+      if (!projects || projects.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📂</div>
+            <h4>No projects found</h4>
+            <p>Try adjusting your search query or category filters, or add a new project.</p>
+            <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('btnOpenAddProjectModal').click()">Add First Project</button>
+          </div>
+        `;
+        return;
+      }
+
+      const rows = projects.map(p => {
+        const createdDate = new Date(p.created_at).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' });
+        const imgSrc = p.cover_image_url ? (p.cover_image_url.startsWith('http') || p.cover_image_url.startsWith('assets/') ? (p.cover_image_url.startsWith('assets/') ? `../${p.cover_image_url}` : p.cover_image_url) : p.cover_image_url) : '../assets/hero-mockup.jpg';
+
+        return `
+          <tr>
+            <td style="width: 70px;">
+              <img src="${imgSrc}" alt="${escapeHtml(p.title)}" style="width: 56px; height: 42px; border-radius: 6px; object-fit: cover;" onerror="this.src='../assets/hero-mockup.jpg'">
+            </td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <strong style="color: #ffffff; font-size: 0.95rem;">${escapeHtml(p.title)}</strong>
+                ${p.is_featured ? '<span style="font-size: 0.65rem; background: rgba(245, 158, 11, 0.2); color: #fcd34d; padding: 1px 6px; border-radius: 4px; font-weight: 700;">FEATURED</span>' : ''}
+              </div>
+              <div style="font-size: 0.78rem; color: #94a3b8; margin-top: 2px;">
+                <span>Slug: /${escapeHtml(p.slug)}</span> • <span>${escapeHtml(p.client_name || 'RK DIGITAL STUDIO')}</span>
+              </div>
+            </td>
+            <td>
+              <span style="color: #38bdf8; font-weight: 500;">${escapeHtml(p.category)}</span>
+            </td>
+            <td>
+              <span class="status-badge ${p.status}">${escapeHtml(p.status)}</span>
+            </td>
+            <td>
+              <span style="font-size: 0.8rem; color: #94a3b8;">${createdDate}</span>
+            </td>
+            <td>
+              <div class="table-actions">
+                ${p.live_url ? `
+                  <a href="${escapeHtml(p.live_url)}" target="_blank" rel="noopener noreferrer" class="action-btn" title="Open Live Website">
+                    Live ↗
+                  </a>
+                ` : ''}
+                <button type="button" class="action-btn" onclick="handleEditProject('${p.id}')" title="Edit">
+                  Edit
+                </button>
+                <button type="button" class="action-btn" onclick="handleToggleStatus('${p.id}', '${p.status}')" title="${p.status === 'published' ? 'Unpublish' : 'Publish'}">
+                  ${p.status === 'published' ? 'Draft' : 'Publish'}
+                </button>
+                <button type="button" class="action-btn danger" onclick="handleDeleteProject('${p.id}', '${escapeHtml(p.title)}')" title="Delete">
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      container.innerHTML = `
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Thumbnail</th>
+                <th>Project Name &amp; Details</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function handleEditProject(id) {
+      const proj = currentProjects.find(p => p.id === id);
+      if (proj) {
+        const event = new CustomEvent('openEditProject', { detail: proj });
+        window.dispatchEvent(event);
+      }
+    }
+
+    window.addEventListener('openEditProject', (e) => {
+      const project = e.detail;
+      const modal = document.getElementById('projectModalOverlay');
+      // trigger openModal with project data
+      const event = new Event('submit');
+      // Set values
+      document.getElementById('projectModalTitle').textContent = 'Edit Project Details';
+      document.getElementById('projectId').value = project.id;
+      document.getElementById('projectTitle').value = project.title || '';
+      document.getElementById('projectSlug').value = project.slug || '';
+      document.getElementById('projectCategory').value = project.category || 'School Website';
+      document.getElementById('projectClient').value = project.client_name || '';
+      document.getElementById('projectStatus').value = project.status || 'published';
+      document.getElementById('projectLiveUrl').value = project.live_url || '';
+      document.getElementById('projectFeatured').checked = !!project.is_featured;
+      document.getElementById('projectShortDesc').value = project.short_description || '';
+      document.getElementById('projectDesc').value = project.description || '';
+      document.getElementById('projectCoverUrl').value = project.cover_image_url || '';
+
+      const previewBox = document.getElementById('imagePreviewBox');
+      const previewImg = document.getElementById('imagePreview');
+      if (project.cover_image_url) {
+        const src = project.cover_image_url.startsWith('http') || project.cover_image_url.startsWith('assets/')
+          ? (project.cover_image_url.startsWith('assets/') ? `../${project.cover_image_url}` : project.cover_image_url)
+          : project.cover_image_url;
+        previewImg.src = src;
+        previewBox.style.display = 'block';
+      }
+
+      modal.classList.add('open');
+    });
+
+    async function handleToggleStatus(id, currentStatus) {
+      const newStatus = currentStatus === 'published' ? 'draft' : 'published';
+      try {
+        const res = await window.RK_CLIENT.saveProject({ id, status: newStatus });
+        if (res.success) {
+          window.RK_AUTH.showToast(`Project status updated to ${newStatus}.`);
+          loadProjects();
+        }
+      } catch (err) {
+        alert('Status update error: ' + err.message);
+      }
+    }
+
+    function handleDeleteProject(id, title) {
+      window.RK_AUTH.confirmAction({
+        title: 'Delete Project',
+        message: `Are you sure you want to delete "${title}"? This will remove it from the public portfolio.`,
+        confirmText: 'Delete Project',
+        isDanger: true,
+        onConfirm: async () => {
+          try {
+            await window.RK_CLIENT.deleteProject(id, true);
+            window.RK_AUTH.showToast('Project deleted successfully.');
+            loadProjects();
+          } catch (err) {
+            alert('Delete failed: ' + err.message);
+          }
+        }
+      });
+    }
+
+    function debounce(func, wait) {
+      let timeout;
+      return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>

@@ -9,8 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initQuickServiceSelectors();
   initEnquiryForm();
   initProjectModal();
+  initDynamicPortfolio();
   initCopyButtons();
-  initAdminLogs();
+  initSafeSocialLinks();
 });
 
 /* ==========================================================================
@@ -249,14 +250,38 @@ function initEnquiryForm() {
     if (btnSpinner) btnSpinner.style.display = 'inline-block';
 
     try {
-      // Dispatch to database & email notification handler (FormSubmit / Supabase / local queue)
-      if (!window.RK_DB || typeof window.RK_DB.saveEnquiryRecord !== 'function') {
-        throw new Error('Database handler is not available to record this enquiry.');
+      // 1. Anti-spam honeypot verification
+      const honeypot = document.getElementById('enquiryHoneypot');
+      if (honeypot && honeypot.value.trim().length > 0) {
+        console.warn('Spam submission detected and blocked via honeypot.');
+        if (submitBtn) submitBtn.disabled = false;
+        return;
       }
 
-      const result = await window.RK_DB.saveEnquiryRecord(formData);
-      if (!result || !result.success) {
-        throw new Error(result?.message || 'Enquiry record could not be saved.');
+      // 2. Dispatch to database (Supabase CRM leads table & durable local queue)
+      let savedResult = null;
+      if (window.RK_CLIENT && typeof window.RK_CLIENT.submitPublicEnquiry === 'function') {
+        savedResult = await window.RK_CLIENT.submitPublicEnquiry(formData);
+      } else if (window.RK_DB && typeof window.RK_DB.saveEnquiryRecord === 'function') {
+        savedResult = await window.RK_DB.saveEnquiryRecord(formData);
+      }
+
+      if (!savedResult || !savedResult.success) {
+        throw new Error(savedResult?.message || 'Enquiry record could not be saved.');
+      }
+
+      // 3. Dispatch background FormSubmit email notification
+      if (window.RK_DB && typeof window.RK_DB.sendEmailNotification === 'function') {
+        window.RK_DB.sendEmailNotification({
+          full_name: formData.fullName,
+          phone: formData.phone,
+          email: formData.email,
+          business_name: formData.businessName,
+          business_type: formData.businessType,
+          service: formData.service,
+          budget: formData.budget,
+          message: formData.message
+        });
       }
 
       // Hide any previous error banner
@@ -274,7 +299,7 @@ function initEnquiryForm() {
       }
 
       form.reset();
-      showToast('✅ Enquiry received! Our team will contact you within 30 minutes.');
+      showToast('Thank you! Your enquiry has been successfully submitted. Our team will contact you within 30 minutes.');
 
     } catch (err) {
       console.error('Submission error:', err);
@@ -292,7 +317,7 @@ function initEnquiryForm() {
         waErrorBtn.href = waUrl;
       }
 
-      showToast('⚠️ Could not send online. Please tap WhatsApp to send directly.');
+      showToast('Unable to submit your message right now. Please connect with us directly on WhatsApp (+91-9519073791) or phone for immediate assistance.');
     } finally {
       if (submitBtn) submitBtn.disabled = false;
       if (btnText) btnText.textContent = 'Send Enquiry (Get Reply in 30 Min) 🚀';
@@ -348,6 +373,151 @@ function initProjectModal() {
 }
 
 /* ==========================================================================
+   5b. Dynamic Database-driven Portfolio & Category Filter
+   ========================================================================== */
+async function initDynamicPortfolio() {
+  const container = document.getElementById('dynamicPortfolioContainer');
+  const filterTabs = document.querySelectorAll('[data-portfolio-filter]');
+
+  if (!container || !window.RK_CLIENT) return;
+
+  let allProjects = [];
+
+  try {
+    allProjects = await window.RK_CLIENT.getProjects({ status: 'published' });
+  } catch (e) {
+    console.warn('Failed to load dynamic portfolio from database:', e);
+    return;
+  }
+
+  if (!allProjects || allProjects.length === 0) return;
+
+  function renderPortfolio(category = 'All') {
+    let filtered = allProjects;
+    if (category !== 'All') {
+      filtered = allProjects.filter(p => p.category === category);
+    }
+
+    if (filtered.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state" style="padding: 48px 20px; text-align: center; color: #94a3b8;">
+          <div style="font-size: 2.2rem; margin-bottom: 10px;">📁</div>
+          <h4 style="color: #ffffff; font-size: 1.15rem; margin-bottom: 6px;">No projects in this category yet</h4>
+          <p style="font-size: 0.9rem; max-width: 440px; margin: 0 auto 18px;">We are currently developing modern websites in this category. Contact us to start your project!</p>
+          <button type="button" class="btn btn-primary btn-sm" data-select-service="${category}">Inquire About This Service</button>
+        </div>
+      `;
+      initQuickServiceSelectors();
+      return;
+    }
+
+    // Top featured project
+    const featuredProject = filtered.find(p => p.is_featured) || filtered[0];
+    const secondaryProjects = filtered.filter(p => p.id !== featuredProject.id);
+
+    const featuredImg = featuredProject.cover_image_url || 'assets/sunbeam-school-preview.jpg';
+    const liveLinkHtml = featuredProject.live_url ? `
+      <a href="${featuredProject.live_url}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+        <span>View Live Website</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      </a>
+    ` : '';
+
+    const featuredHtml = `
+      <div class="portfolio-featured-card">
+        <div class="portfolio-media-box">
+          <img src="${featuredImg}" alt="${featuredProject.title}" class="portfolio-img" width="800" height="500" loading="lazy" onerror="this.src='assets/hero-mockup.jpg'">
+        </div>
+        <div class="portfolio-content-box">
+          <span class="portfolio-badge">✓ ${featuredProject.client_name ? `Verified: ${featuredProject.client_name}` : 'Verified Client Project'}</span>
+          <h3 class="portfolio-title">${featuredProject.title}</h3>
+          <p class="portfolio-desc">${featuredProject.short_description}</p>
+          <div class="portfolio-highlights">
+            <div class="portfolio-hl-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>100% Mobile &amp; Tablet Ready</span>
+            </div>
+            <div class="portfolio-hl-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Custom Brand Architecture</span>
+            </div>
+            <div class="portfolio-hl-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Fast Loading &amp; Clean UI</span>
+            </div>
+            <div class="portfolio-hl-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Enquiry Capture System</span>
+            </div>
+          </div>
+          <div class="portfolio-actions">
+            ${liveLinkHtml}
+            <button type="button" class="btn btn-secondary" data-open-project-modal="${featuredProject.slug}">
+              <span>View Project Details</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const secondaryCardsHtml = secondaryProjects.map(p => {
+      const pImg = p.cover_image_url || 'assets/hero-mockup.jpg';
+      const isConcept = (p.client_name || '').toLowerCase().includes('concept');
+      const badgeText = isConcept ? 'Practice Concept Architecture' : (p.client_name || p.category);
+      const liveBtn = p.live_url ? `
+        <a href="${p.live_url}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm">
+          <span>View Live ↗</span>
+        </a>
+      ` : `
+        <button type="button" class="btn btn-secondary btn-sm" data-select-service="${p.category}">
+          <span>Inquire Website</span>
+        </button>
+      `;
+
+      return `
+        <div class="portfolio-card-item">
+          <div class="portfolio-card-thumb">
+            <img src="${pImg}" alt="${p.title}" class="portfolio-card-img" width="600" height="340" loading="lazy" onerror="this.src='assets/hero-mockup.jpg'">
+          </div>
+          <div class="portfolio-card-content">
+            <span class="portfolio-badge" style="background: rgba(139, 92, 246, 0.15); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.3);">${badgeText}</span>
+            <h4 class="portfolio-card-title">${p.title}</h4>
+            <p class="portfolio-card-desc">${p.short_description}</p>
+            <div class="portfolio-card-tags">
+              <span class="portfolio-mini-tag">${p.category}</span>
+              <span class="portfolio-mini-tag">Mobile Responsive</span>
+              <span class="portfolio-mini-tag">Fast Performance</span>
+            </div>
+            <div class="portfolio-actions">
+              ${liveBtn}
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    container.innerHTML = `
+      ${featuredHtml}
+      ${secondaryCardsHtml ? `<div class="portfolio-grid-secondary">${secondaryCardsHtml}</div>` : ''}
+    `;
+
+    initQuickServiceSelectors();
+    initProjectModal();
+  }
+
+  // Filter tab click handlers
+  filterTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      filterTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const cat = tab.getAttribute('data-portfolio-filter');
+      renderPortfolio(cat);
+    });
+  });
+}
+
+/* ==========================================================================
    6. Copy to Clipboard & Toast Helpers
    ========================================================================== */
 function initCopyButtons() {
@@ -390,204 +560,17 @@ function showToast(message) {
 }
 
 /* ==========================================================================
-   7. Admin Enquiry Logs Modal & Shortcut (Ctrl+Shift+E)
+   7. Graceful Social Link Fallback Handlers
    ========================================================================== */
-function initAdminLogs() {
-  const adminBtn = document.getElementById('openAdminLogsBtn');
-  const modal = document.getElementById('adminEnquiryModal');
-  const listContainer = document.getElementById('adminEnquiryList');
-  const clearBtn = document.getElementById('clearAdminLogsBtn');
-
-  if (!modal || !listContainer) return;
-
-  function renderLogs() {
-    const enquiries = window.RK_DB?.getLocalEnquiries() || [];
-    if (enquiries.length === 0) {
-      listContainer.innerHTML = `
-        <div style="text-align: center; padding: 36px 16px; color: #94a3b8;">
-          <div style="font-size: 2rem; margin-bottom: 8px;">📭</div>
-          <p style="font-size: 1.05rem; color: #e2e8f0; font-weight: 600; margin-bottom: 6px;">Abhi koi local enquiry nahi hai</p>
-          <p style="font-size: 0.85rem;">Jab koi website par enquiry form bharega, uski puri detail yahan dikhegi.</p>
-        </div>
-      `;
-      return;
-    }
-
-    listContainer.innerHTML = enquiries.map((enq) => {
-      const dateStr = enq.created_at ? new Date(enq.created_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : 'Recent';
-      const cleanPhone = (enq.phone || '').replace(/\D/g, '');
-      const waMsg = encodeURIComponent(`Hello ${enq.full_name}, I saw your website enquiry on RK DIGITAL STUDIO regarding ${enq.service}.`);
-      return `
-        <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 18px; margin-bottom: 14px;">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
-            <div>
-              <strong style="color: #fff; font-size: 1.1rem; display: block;">${enq.full_name || 'Client'}</strong>
-              <span style="font-size: 0.85rem; color: #38bdf8;">${enq.business_name ? `${enq.business_name} (${enq.business_type || 'Business'})` : 'Local Client'}</span>
-            </div>
-            <span style="font-size: 0.75rem; background: rgba(56, 189, 248, 0.12); color: #38bdf8; padding: 4px 10px; border-radius: 20px; font-weight: 500;">
-              ${dateStr}
-            </span>
-          </div>
-
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; font-size: 0.875rem; color: #cbd5e1; margin-bottom: 12px; background: rgba(0,0,0,0.2); padding: 10px 14px; border-radius: 8px;">
-            <div><span style="color:#94a3b8;">Phone:</span> <a href="tel:+91${cleanPhone}" style="color: #38bdf8; font-weight:600;">${enq.phone}</a></div>
-            <div><span style="color:#94a3b8;">Service:</span> <span style="color:#fff; font-weight:500;">${enq.service}</span></div>
-            <div><span style="color:#94a3b8;">Budget:</span> <span style="color:#34d399; font-weight:600;">${enq.budget}</span></div>
-            <div><span style="color:#94a3b8;">Email:</span> <span style="color:#fff;">${enq.email || 'N/A'}</span></div>
-          </div>
-
-          <div style="background: rgba(15, 23, 42, 0.6); padding: 12px 14px; border-radius: 8px; font-size: 0.875rem; color: #e2e8f0; margin-bottom: 14px; line-height: 1.6; border-left: 3px solid #38bdf8;">
-            <strong style="color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; display: block; margin-bottom: 4px;">Requirements:</strong>
-            ${enq.message}
-          </div>
-
-          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <a href="https://wa.me/91${cleanPhone}?text=${waMsg}" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-sm" style="padding: 7px 14px; font-size: 0.85rem;">
-              <span>WhatsApp Chat 💬</span>
-            </a>
-            <a href="tel:+91${cleanPhone}" class="btn btn-secondary btn-sm" style="padding: 7px 14px; font-size: 0.85rem;">
-              <span>Call Client 📞</span>
-            </a>
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  function openModal() {
-    renderLogs();
-    updateSupabaseStatus();
-    modal.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeModal() {
-    modal.classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  // --- Supabase Cloud Connection Manager ---
-  function updateSupabaseStatus() {
-    const status = window.RK_DB?.getSupabaseConfig();
-    const dot = document.getElementById('supabaseStatusDot');
-    const badge = document.getElementById('supabaseStatusBadge');
-    const urlInput = document.getElementById('supabaseUrlInput');
-    const keyInput = document.getElementById('supabaseKeyInput');
-
-    if (!status || !dot || !badge) return;
-
-    if (status.isConnected) {
-      dot.style.background = '#10b981';
-      dot.style.boxShadow = '0 0 8px #10b981';
-      badge.textContent = 'Active & Syncing';
-      badge.style.background = 'rgba(16, 185, 129, 0.2)';
-      badge.style.color = '#34d399';
-    } else {
-      dot.style.background = '#f59e0b';
-      dot.style.boxShadow = 'none';
-      badge.textContent = 'Not Connected';
-      badge.style.background = 'rgba(245, 158, 11, 0.15)';
-      badge.style.color = '#fbbf24';
-    }
-
-    if (urlInput && status.url) urlInput.value = status.url;
-    if (keyInput && status.key) keyInput.value = status.key;
-  }
-
-  const toggleConfigBtn = document.getElementById('toggleSupabaseConfigBtn');
-  const configForm = document.getElementById('supabaseConfigForm');
-  if (toggleConfigBtn && configForm) {
-    toggleConfigBtn.addEventListener('click', () => {
-      const isHidden = configForm.style.display === 'none' || !configForm.style.display;
-      configForm.style.display = isHidden ? 'block' : 'none';
-      toggleConfigBtn.textContent = isHidden ? 'Close Form ✕' : 'Configure Credentials ⚙️';
-    });
-  }
-
-  const saveSupabaseBtn = document.getElementById('saveSupabaseConfigBtn');
-  if (saveSupabaseBtn) {
-    saveSupabaseBtn.addEventListener('click', async () => {
-      const urlInput = document.getElementById('supabaseUrlInput');
-      const keyInput = document.getElementById('supabaseKeyInput');
-      const urlVal = urlInput ? urlInput.value.trim() : '';
-      const keyVal = keyInput ? keyInput.value.trim() : '';
-
-      if (!urlVal || !keyVal) {
-        alert('Kripya dono Supabase URL aur Anon Public Key enter karein.');
-        return;
-      }
-
-      saveSupabaseBtn.textContent = 'Testing...';
-      saveSupabaseBtn.disabled = true;
-
-      try {
-        window.RK_DB?.setSupabaseConfig(urlVal, keyVal);
-        updateSupabaseStatus();
-        showToast('⚡ Supabase credentials save ho gaye! Enquiries sync shuru.');
-        if (configForm) configForm.style.display = 'none';
-        if (toggleConfigBtn) toggleConfigBtn.textContent = 'Configure Credentials ⚙️';
-      } catch (err) {
-        alert('Error saving credentials: ' + err.message);
-      } finally {
-        saveSupabaseBtn.textContent = 'Save & Connect';
-        saveSupabaseBtn.disabled = false;
+function initSafeSocialLinks() {
+  const socialLinks = document.querySelectorAll('a.social-link-btn, a.social-pill');
+  socialLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = (link.getAttribute('href') || '').trim();
+      if (!href || href === '#' || href === 'javascript:void(0)') {
+        e.preventDefault();
+        showToast('Official social channel is active on Instagram (@digita.withr) and YouTube.');
       }
     });
-  }
-
-  const disconnectBtn = document.getElementById('disconnectSupabaseBtn');
-  if (disconnectBtn) {
-    disconnectBtn.addEventListener('click', () => {
-      if (confirm('Kya aap Supabase disconnect karna chahte hain?')) {
-        window.RK_DB?.disconnectSupabase();
-        const urlInput = document.getElementById('supabaseUrlInput');
-        const keyInput = document.getElementById('supabaseKeyInput');
-        if (urlInput) urlInput.value = '';
-        if (keyInput) keyInput.value = '';
-        updateSupabaseStatus();
-        showToast('Supabase disconnected.');
-      }
-    });
-  }
-
-  if (adminBtn) {
-    adminBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      openModal();
-    });
-  }
-
-  const closeBtn = document.getElementById('closeAdminLogsBtn');
-  if (closeBtn) {
-    closeBtn.addEventListener('click', closeModal);
-  }
-
-  const backdrop = modal.querySelector('.modal-backdrop');
-  if (backdrop) {
-    backdrop.addEventListener('click', closeModal);
-  }
-
-  // Secret shortcut: Ctrl + Shift + E or typing #admin in URL
-  document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.shiftKey && (e.key === 'E' || e.key === 'e')) {
-      e.preventDefault();
-      openModal();
-    }
-    if (e.key === 'Escape' && modal.classList.contains('open')) {
-      closeModal();
-    }
   });
-
-  if (window.location.hash === '#admin' || window.location.hash === '#admin-logs') {
-    openModal();
-  }
-
-  if (clearBtn) {
-    clearBtn.addEventListener('click', () => {
-      if (confirm('Kya aap saare local enquiry logs delete karna chahte hain?')) {
-        window.RK_DB?.clearLocalEnquiries();
-        renderLogs();
-      }
-    });
-  }
 }
