@@ -23,6 +23,17 @@
       ],
       "destination": "https://www.rkdigitaistudio.in/$1",
       "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": ".*rkdigitalstudio\\.in"
+        }
+      ],
+      "destination": "https://www.rkdigitaistudio.in/$1",
+      "permanent": true
     }
   ],
   "rewrites": [
@@ -61,6 +72,14 @@
     {
       "source": "/google0b1c602e12dd4b99",
       "destination": "/google0b1c602e12dd4b99.html"
+    },
+    {
+      "source": "/favicon.ico",
+      "destination": "/favicon.ico"
+    },
+    {
+      "source": "/site.webmanifest",
+      "destination": "/site.webmanifest"
     }
   ],
   "headers": [
@@ -173,6 +192,32 @@
         {
           "key": "Content-Type",
           "value": "application/xml; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/favicon.ico",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "image/x-icon"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/site.webmanifest",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/manifest+json; charset=utf-8"
         },
         {
           "key": "Cache-Control",

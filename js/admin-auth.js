@@ -160,7 +160,7 @@
 
     // 2. Initial Setup / Local Fallback Mode:
     // If Supabase Auth is not yet configured, allow authorized studio owner credentials
-    if ((cleanEmail === 'contact@rkdigitaistudio.in' || cleanEmail === 'rishabhpal549@gmail.com') && cleanPassword === 'rkstudio2026') {
+    if ((cleanEmail === 'contact@rkdigitalstudio.in' || cleanEmail === 'contact@rkdigitaistudio.in' || cleanEmail === 'rishabhpal549@gmail.com') && cleanPassword === 'rkstudio2026') {
       const userObj = {
         id: 'admin-rishabh',
         email: cleanEmail,
