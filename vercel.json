@@ -39,7 +39,7 @@
   "rewrites": [
     {
       "source": "/admin.html",
-      "destination": "/admin.html"
+      "destination": "/admin/index.html"
     },
     {
       "source": "/admin",
