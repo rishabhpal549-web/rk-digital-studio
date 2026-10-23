@@ -8,7 +8,7 @@
  */
 
 const RK_DB_CONFIG = {
-  notificationEmail: window.ENV?.NOTIFICATION_EMAIL || window.ENV?.CONTACT_EMAIL || 'contact@rkdigitaistudio.in',
+  notificationEmail: window.ENV?.NOTIFICATION_EMAIL || 'rishabhpal549@gmail.com',
   backupEmail: 'rishabhpal549@gmail.com',
   ownerPhone: window.ENV?.OWNER_PHONE || '9519073791',
   supabaseUrl: localStorage.getItem('rk_supabase_url') || 
@@ -29,7 +29,7 @@ const RK_DB_CONFIG = {
 
 /**
  * Dispatches the enquiry details directly to studio inbox via FormSubmit.
- * FormSubmit delivers free emails directly to contact@rkdigitaistudio.in.
+ * FormSubmit delivers free emails directly to rishabhpal549@gmail.com.
  * @param {Object} payload 
  * @returns {Promise<{success: boolean, message?: string}>}
  */
@@ -42,9 +42,10 @@ async function sendEmailNotification(payload) {
     });
 
     const bodyData = {
-      _subject: `🔥 [30-Min Reply] New Website Enquiry: ${payload.full_name} (${payload.service})`,
+      _subject: `🔥 [RK STUDIO] Nayi Website Enquiry: ${payload.full_name} (${payload.service}) - 📞 ${payload.phone}`,
       _template: 'table',
       _captcha: 'false',
+      _cc: 'contact@rkdigitaistudio.in',
       'Client Name': payload.full_name,
       'Client Phone Number': payload.phone,
       'Quick WhatsApp Link': `https://wa.me/91${payload.phone.replace(/\D/g, '')}`,
@@ -59,13 +60,16 @@ async function sendEmailNotification(payload) {
       'Submitted At (IST)': formattedDate
     };
 
-    const response = await fetch(`https://formsubmit.co/ajax/${RK_DB_CONFIG.notificationEmail}`, {
+    const targetEmail = RK_DB_CONFIG.notificationEmail || 'rishabhpal549@gmail.com';
+
+    const response = await fetch(`https://formsubmit.co/ajax/${targetEmail}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify(bodyData)
+      body: JSON.stringify(bodyData),
+      keepalive: true
     });
 
     if (response.ok) {

@@ -15,7 +15,7 @@
   window.ENV.NEXT_PUBLIC_SUPABASE_URL = window.ENV.NEXT_PUBLIC_SUPABASE_URL || window.ENV.SUPABASE_URL || '';
   window.ENV.NEXT_PUBLIC_SUPABASE_ANON_KEY = window.ENV.NEXT_PUBLIC_SUPABASE_ANON_KEY || window.ENV.SUPABASE_ANON_KEY || '';
   window.ENV.CONTACT_EMAIL = window.ENV.CONTACT_EMAIL || 'contact@rkdigitaistudio.in';
-  window.ENV.NOTIFICATION_EMAIL = window.ENV.NOTIFICATION_EMAIL || 'contact@rkdigitaistudio.in';
+  window.ENV.NOTIFICATION_EMAIL = window.ENV.NOTIFICATION_EMAIL || 'rishabhpal549@gmail.com';
   window.ENV.OWNER_PHONE = window.ENV.OWNER_PHONE || '9519073791';
   window.ENV.STUDIO_NAME = window.ENV.STUDIO_NAME || 'RK DIGITAL STUDIO';
 

@@ -250,11 +250,23 @@ function initEnquiryForm() {
     if (btnText) btnText.textContent = 'Submitting Enquiry...';
     if (btnSpinner) btnSpinner.style.display = 'inline-block';
 
+    // Desktop popup pre-allocation to prevent popup-blockers
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    let waWindow = null;
+    if (!isMobile) {
+      try {
+        waWindow = window.open('about:blank', '_blank');
+      } catch (e) {
+        waWindow = null;
+      }
+    }
+
     try {
       // 1. Anti-spam honeypot verification
       const honeypot = document.getElementById('enquiryHoneypot');
       if (honeypot && honeypot.value.trim().length > 0) {
         console.warn('Spam submission detected and blocked via honeypot.');
+        if (waWindow && !waWindow.closed) waWindow.close();
         if (submitBtn) submitBtn.disabled = false;
         return;
       }
@@ -271,18 +283,25 @@ function initEnquiryForm() {
         throw new Error(savedResult?.message || 'Enquiry record could not be saved.');
       }
 
-      // 3. Dispatch background FormSubmit email notification
+      // 3. Dispatch FormSubmit email notification directly to rishabhpal549@gmail.com
       if (window.RK_DB && typeof window.RK_DB.sendEmailNotification === 'function') {
-        window.RK_DB.sendEmailNotification({
-          full_name: formData.fullName,
-          phone: formData.phone,
-          email: formData.email,
-          business_name: formData.businessName,
-          business_type: formData.businessType,
-          service: formData.service,
-          budget: formData.budget,
-          message: formData.message
-        });
+        try {
+          await Promise.race([
+            window.RK_DB.sendEmailNotification({
+              full_name: formData.fullName,
+              phone: formData.phone,
+              email: formData.email,
+              business_name: formData.businessName,
+              business_type: formData.businessType,
+              service: formData.service,
+              budget: formData.budget,
+              message: formData.message
+            }),
+            new Promise(res => setTimeout(() => res({ success: false, timeout: true }), 2500))
+          ]);
+        } catch (mailErr) {
+          console.warn('Email dispatch warning:', mailErr);
+        }
       }
 
       // Hide any previous error banner
@@ -299,11 +318,32 @@ function initEnquiryForm() {
         successBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
 
+      // 4. Trigger WhatsApp handoff directly to +91 9519073791
+      if (waWindow && !waWindow.closed) {
+        waWindow.location.href = waUrl;
+      } else if (isMobile) {
+        // On mobile, seamless deep-link into WhatsApp App
+        setTimeout(() => {
+          window.location.href = waUrl;
+        }, 800);
+      } else {
+        // Fallback for desktop if popup was initially blocked
+        try {
+          window.open(waUrl, '_blank');
+        } catch (e) {
+          console.warn('Could not launch WhatsApp popup:', e);
+        }
+      }
+
       form.reset();
-      showToast('Thank you! Your enquiry has been successfully submitted. Our team will contact you within 30 minutes.');
+      showToast('Enquiry recorded! Opening WhatsApp to send your requirements to Rishabh...');
 
     } catch (err) {
       console.error('Submission error:', err);
+
+      if (waWindow && !waWindow.closed) {
+        try { waWindow.close(); } catch (e) {}
+      }
 
       if (successBanner) {
         successBanner.classList.remove('visible');
@@ -321,7 +361,7 @@ function initEnquiryForm() {
       showToast('Unable to submit your message right now. Please connect with us directly on WhatsApp (+91-9519073791) or phone for immediate assistance.');
     } finally {
       if (submitBtn) submitBtn.disabled = false;
-      if (btnText) btnText.textContent = 'Send Enquiry (Get Reply in 30 Min) 🚀';
+      if (btnText) btnText.textContent = 'Claim Free Live Demo & Quote 🚀';
       if (btnSpinner) btnSpinner.style.display = 'none';
     }
   });

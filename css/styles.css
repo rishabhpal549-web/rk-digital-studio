@@ -3318,3 +3318,82 @@ button, input, select, textarea {
   font-weight: 500;
 }
 
+/* ==========================================================================
+   High-Converting Top Announcement Bar & Offer Badges
+   ========================================================================== */
+.top-announcement-bar {
+  background: linear-gradient(90deg, #064e3b 0%, #0f172a 50%, #1e1b4b 100%);
+  border-bottom: 1px solid rgba(16, 185, 129, 0.35);
+  color: #f1f5f9;
+  font-size: 0.875rem;
+  padding: 8px 16px;
+  position: relative;
+  z-index: 1001;
+}
+
+.announcement-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.announcement-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.25);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.45);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.announcement-text {
+  margin: 0;
+  color: #e2e8f0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.announcement-text strong {
+  color: #38bdf8;
+}
+
+.announcement-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #10b981;
+  color: #022c22;
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  transition: transform 0.2s, background 0.2s;
+  white-space: nowrap;
+}
+
+.announcement-cta:hover {
+  background: #34d399;
+  transform: translateX(2px);
+  color: #022c22;
+}
+
+@media (max-width: 768px) {
+  .top-announcement-bar {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+  .announcement-text {
+    font-size: 0.8rem;
+  }
+}
+
