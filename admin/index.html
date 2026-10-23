@@ -191,7 +191,76 @@
           </div>
         </div>
 
-        <!-- 2. Two-Column Layout: Recent Inquiries & Upcoming Follow-ups -->
+        <!-- 2. Website Visitors & Traffic Analytics (Kon kon website par aa rhe hai) -->
+        <div class="admin-card" style="margin-bottom: 32px; border-color: rgba(56, 189, 248, 0.35); box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);">
+          <div class="admin-card-header" style="flex-wrap: wrap; gap: 12px;">
+            <div class="admin-card-title">
+              <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981; margin-right: 6px;"></span>
+              <span>Website Visitors &amp; Traffic Analytics</span>
+              <span style="font-size: 0.72rem; background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 2px 8px; border-radius: 12px; font-weight: 600;">Live Tracker</span>
+            </div>
+            <div style="font-size: 0.82rem; color: #94a3b8;">
+              Real-time tracking of website visitors, devices &amp; referral channels
+            </div>
+          </div>
+
+          <!-- Quick Traffic Stats Grid -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; padding: 20px; border-bottom: 1px solid var(--border-subtle); background: rgba(14, 21, 38, 0.4);">
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); padding: 14px 18px; border-radius: 12px;">
+              <span style="font-size: 0.8rem; color: #94a3b8; display: block; margin-bottom: 4px;">Today's Visitors</span>
+              <span id="trafficTodayCount" style="font-size: 1.6rem; font-weight: 700; color: #38bdf8;">0</span>
+              <span style="font-size: 0.75rem; color: #64748b; display: block; margin-top: 2px;">Unique visits today</span>
+            </div>
+
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); padding: 14px 18px; border-radius: 12px;">
+              <span style="font-size: 0.8rem; color: #94a3b8; display: block; margin-bottom: 4px;">Total Page Views</span>
+              <span id="trafficTotalViews" style="font-size: 1.6rem; font-weight: 700; color: #a855f7;">0</span>
+              <span style="font-size: 0.75rem; color: #64748b; display: block; margin-top: 2px;">All recorded views</span>
+            </div>
+
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); padding: 14px 18px; border-radius: 12px;">
+              <span style="font-size: 0.8rem; color: #94a3b8; display: block; margin-bottom: 4px;">Top Traffic Source</span>
+              <span id="trafficTopSource" style="font-size: 1.15rem; font-weight: 700; color: #10b981;">Direct Visit</span>
+              <span style="font-size: 0.75rem; color: #64748b; display: block; margin-top: 2px;">WhatsApp &amp; Search</span>
+            </div>
+
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); padding: 14px 18px; border-radius: 12px;">
+              <span style="font-size: 0.8rem; color: #94a3b8; display: block; margin-bottom: 4px;">Device Split</span>
+              <span id="trafficDeviceSplit" style="font-size: 1.1rem; font-weight: 700; color: #f59e0b;">Mobile: 0 | PC: 0</span>
+              <span style="font-size: 0.75rem; color: #64748b; display: block; margin-top: 2px;">Smartphones &amp; Desktops</span>
+            </div>
+          </div>
+
+          <!-- Real-Time Recent Visitors Feed Table -->
+          <div style="padding: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+              <h4 style="font-size: 0.95rem; color: #fff; margin: 0;">Live Visitor Activity Feed (Who is visiting)</h4>
+              <span style="font-size: 0.75rem; color: #64748b;">Automatically tracks every website visitor</span>
+            </div>
+
+            <div class="table-responsive">
+              <table class="admin-table" style="font-size: 0.85rem;">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Page Visited</th>
+                    <th>Device &amp; Browser</th>
+                    <th>Source Channel</th>
+                  </tr>
+                </thead>
+                <tbody id="trafficVisitorsTableBody">
+                  <tr>
+                    <td colspan="4" style="text-align: center; color: #64748b; padding: 24px;">
+                      Waiting for visitor activity... Visitors who browse rkdigitaistudio.in will automatically appear here.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Two-Column Layout: Recent Inquiries & Upcoming Follow-ups -->
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 24px; margin-bottom: 32px;">
           
           <!-- Recent Inquiries Panel -->
@@ -255,6 +324,7 @@
   <script src="../js/env.js"></script>
   <script src="../js/supabase-client.js"></script>
   <script src="../js/admin-auth.js"></script>
+  <script src="../js/analytics.js"></script>
 
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
@@ -298,17 +368,92 @@
         const navFollowups = document.getElementById('navFollowupsCount');
         if (navFollowups) navFollowups.textContent = stats.upcomingFollowUps.length;
 
-        // 2. Render Recent Enquiries
+        // 2. Render Website Visitors Analytics (Live Traffic)
+        renderVisitorAnalytics();
+
+        // 3. Render Recent Enquiries
         renderRecentEnquiries(stats.recentEnquiries);
 
-        // 3. Render Upcoming Followups
+        // 4. Render Upcoming Followups
         renderUpcomingFollowups(stats.upcomingFollowUps);
 
-        // 4. Render Projects Summary
+        // 5. Render Projects Summary
         loadProjectsSummary();
 
       } catch (err) {
         console.error('Failed to load dashboard data:', err);
+      }
+    }
+
+    function renderVisitorAnalytics() {
+      if (!window.RK_ANALYTICS) return;
+      const a = window.RK_ANALYTICS.getAnalyticsStats();
+
+      const todayEl = document.getElementById('trafficTodayCount');
+      if (todayEl) todayEl.textContent = a.todayVisits || 0;
+
+      const totalEl = document.getElementById('trafficTotalViews');
+      if (totalEl) totalEl.textContent = a.totalVisits || 0;
+
+      const topSrcEl = document.getElementById('trafficTopSource');
+      if (topSrcEl) {
+        const srcEntries = Object.entries(a.sources || {}).sort((x, y) => y[1] - x[1]);
+        topSrcEl.textContent = srcEntries.length > 0 ? `${srcEntries[0][0]} (${srcEntries[0][1]})` : 'Direct Visit';
+      }
+
+      const devEl = document.getElementById('trafficDeviceSplit');
+      if (devEl) {
+        const m = a.devices?.Mobile || 0;
+        const d = a.devices?.Desktop || 0;
+        devEl.textContent = `📱 ${m} | 💻 ${d}`;
+      }
+
+      const tbody = document.getElementById('trafficVisitorsTableBody');
+      if (tbody) {
+        if (!a.recentVisits || a.recentVisits.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="4" style="text-align: center; color: #64748b; padding: 24px;">
+                Waiting for live visits... Open <a href="/" target="_blank" style="color: #38bdf8;">rkdigitaistudio.in</a> in a new tab to see your visit logged here.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tbody.innerHTML = a.recentVisits.map(v => {
+          const timeStr = new Date(v.timestamp).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+          const dateStr = new Date(v.timestamp).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+          const devIcon = v.device === 'Mobile' ? '📱' : (v.device === 'Tablet' ? '📟' : '💻');
+          
+          let badgeBg = 'rgba(56, 189, 248, 0.15)';
+          let badgeCol = '#38bdf8';
+          if (v.source.includes('WhatsApp')) { badgeBg = 'rgba(37, 211, 102, 0.15)'; badgeCol = '#25d366'; }
+          if (v.source.includes('Google')) { badgeBg = 'rgba(234, 67, 53, 0.15)'; badgeCol = '#f87171'; }
+          if (v.source.includes('Instagram')) { badgeBg = 'rgba(225, 48, 108, 0.15)'; badgeCol = '#f43f5e'; }
+
+          return `
+            <tr>
+              <td style="white-space: nowrap;">
+                <strong style="color: #ffffff;">${timeStr}</strong>
+                <span style="display: block; font-size: 0.72rem; color: #64748b;">${dateStr}</span>
+              </td>
+              <td>
+                <code style="color: #38bdf8; background: rgba(56, 189, 248, 0.1); padding: 2px 6px; border-radius: 4px;">${escapeHtml(v.page)}</code>
+                <span style="display: block; font-size: 0.75rem; color: #94a3b8; margin-top: 2px;">${escapeHtml(v.title ? v.title.substring(0, 35) + '...' : '')}</span>
+              </td>
+              <td>
+                <span>${devIcon} ${escapeHtml(v.device)}</span>
+                <span style="display: block; font-size: 0.72rem; color: #64748b;">${escapeHtml(v.browser || 'Browser')}</span>
+              </td>
+              <td>
+                <span style="background: ${badgeBg}; color: ${badgeCol}; padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">
+                  ${escapeHtml(v.source)}
+                </span>
+              </td>
+            </tr>
+          `;
+        }).join('');
       }
     }
 
