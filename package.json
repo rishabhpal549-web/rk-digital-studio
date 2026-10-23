@@ -1,9 +1,0 @@
-{
-  "name": "rk-digital-studio",
-  "version": "1.0.0",
-  "private": true,
-  "description": "RK DIGITAL STUDIO — Official Website, CMS & CRM",
-  "scripts": {
-    "build": "node build-env.js"
-  }
-}
