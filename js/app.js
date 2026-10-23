@@ -594,7 +594,7 @@ function initFounderPhotoLightbox() {
         <div class="founder-modal-backdrop"></div>
         <div class="founder-modal-content">
           <button type="button" class="founder-modal-close" aria-label="Close photo preview">✕</button>
-          <img src="assets/founder.jpg" alt="Rishabh Pal - Founder & Studio Lead" class="founder-modal-img">
+          <img src="assets/founder.jpg?v=2" alt="Rishabh Pal - Founder & Studio Lead" class="founder-modal-img">
           <div class="founder-modal-caption">
             <h4>Rishabh Pal</h4>
             <span>Founder &amp; Studio Lead • RK DIGITAL STUDIO</span>
