@@ -11,8 +11,18 @@ const RK_DB_CONFIG = {
   notificationEmail: window.ENV?.NOTIFICATION_EMAIL || window.ENV?.CONTACT_EMAIL || 'contact@rkdigitaistudio.in',
   backupEmail: 'rishabhpal549@gmail.com',
   ownerPhone: window.ENV?.OWNER_PHONE || '9519073791',
-  supabaseUrl: localStorage.getItem('rk_supabase_url') || window.ENV?.SUPABASE_URL || window.ENV?.NEXT_PUBLIC_SUPABASE_URL || '',
-  supabaseAnonKey: localStorage.getItem('rk_supabase_key') || window.ENV?.SUPABASE_ANON_KEY || window.ENV?.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
+  supabaseUrl: localStorage.getItem('rk_supabase_url') || 
+               window.ENV?.SUPABASE_URL || 
+               window.ENV?.NEXT_PUBLIC_SUPABASE_URL || 
+               window.ENV?.SUPABASE_PROJECT_URL || 
+               window.ENV?.VITE_SUPABASE_URL || '',
+  supabaseAnonKey: localStorage.getItem('rk_supabase_key') || 
+                   window.ENV?.SUPABASE_ANON_KEY || 
+                   window.ENV?.NEXT_PUBLIC_SUPABASE_ANON_KEY || 
+                   window.ENV?.SUPABASE_PUBLISHABLE_KEY || 
+                   window.ENV?.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || 
+                   window.ENV?.SUPABASE_KEY || 
+                   window.ENV?.VITE_SUPABASE_ANON_KEY || '',
   tableName: 'enquiries',
   localStorageKey: 'rk_digital_studio_enquiries_log'
 };

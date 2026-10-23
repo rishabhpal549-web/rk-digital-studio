@@ -38,6 +38,10 @@
   ],
   "rewrites": [
     {
+      "source": "/api/env",
+      "destination": "/api/env.js"
+    },
+    {
       "source": "/admin.html",
       "destination": "/admin.html"
     },

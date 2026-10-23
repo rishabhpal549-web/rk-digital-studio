@@ -14,6 +14,15 @@
    * @returns {Promise<{isAuthenticated: boolean, user: Object|null}>}
    */
   async function getSession() {
+    // 0. Ensure config is resolved (including async runtime /api/env)
+    if (window.RK_CLIENT && typeof window.RK_CLIENT.ensureConfig === 'function') {
+      try {
+        await window.RK_CLIENT.ensureConfig();
+      } catch (e) {
+        // Continue
+      }
+    }
+
     // 1. Check Supabase Auth if client exists
     const client = window.RK_CLIENT?.getClient();
     if (client) {
@@ -110,7 +119,7 @@
    * @param {string} email
    * @param {string} password
    * @param {boolean} rememberMe
-   * @returns {Promise<{success: boolean, message?: string, user?: Object}>}
+   * @returns {Promise<{success: boolean, message?: string, user?: Object, isConfigMissing?: boolean}>}
    */
   async function login(email, password, rememberMe = true) {
     const cleanEmail = email.trim().toLowerCase();
@@ -118,6 +127,15 @@
 
     if (!cleanEmail || !cleanPassword) {
       return { success: false, message: 'Please enter both email and password.' };
+    }
+
+    // 0. Ensure config is resolved (including async runtime /api/env)
+    if (window.RK_CLIENT && typeof window.RK_CLIENT.ensureConfig === 'function') {
+      try {
+        await window.RK_CLIENT.ensureConfig();
+      } catch (e) {
+        // Continue
+      }
     }
 
     const client = window.RK_CLIENT?.getClient();
@@ -180,9 +198,18 @@
       return { success: true, user: userObj };
     }
 
+    // 3. If Supabase client was not initialized at all, explain clearly
+    if (!client) {
+      return {
+        success: false,
+        isConfigMissing: true,
+        message: 'Supabase Cloud is not connected yet. Supabase URL and Publishable Key are missing in Vercel Environment Variables or local settings. Use the Quick Setup on this page to configure them.'
+      };
+    }
+
     return {
       success: false,
-      message: 'Invalid email or password. Please verify your credentials or check Supabase Auth setup.'
+      message: 'Invalid email or password. Please verify your credentials in Supabase Auth.'
     };
   }
 

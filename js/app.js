@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initDynamicPortfolio();
   initCopyButtons();
   initSafeSocialLinks();
+  initFounderPhotoLightbox();
 });
 
 /* ==========================================================================
@@ -574,3 +575,46 @@ function initSafeSocialLinks() {
     });
   });
 }
+
+/* ==========================================================================
+   8. Founder Photo Fullscreen Lightbox
+   Allows users and clients to view Rishabh Pal's photo in full resolution.
+   ========================================================================== */
+function initFounderPhotoLightbox() {
+  const photoWrapper = document.querySelector('.founder-photo-wrapper');
+  if (!photoWrapper) return;
+
+  photoWrapper.addEventListener('click', () => {
+    let modal = document.getElementById('founderPhotoModal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'founderPhotoModal';
+      modal.className = 'founder-photo-modal';
+      modal.innerHTML = `
+        <div class="founder-modal-backdrop"></div>
+        <div class="founder-modal-content">
+          <button type="button" class="founder-modal-close" aria-label="Close photo preview">✕</button>
+          <img src="assets/founder.jpg" alt="Rishabh Pal - Founder & Studio Lead" class="founder-modal-img">
+          <div class="founder-modal-caption">
+            <h4>Rishabh Pal</h4>
+            <span>Founder &amp; Studio Lead • RK DIGITAL STUDIO</span>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      const closeBtn = modal.querySelector('.founder-modal-close');
+      const backdrop = modal.querySelector('.founder-modal-backdrop');
+
+      const closeModal = () => modal.classList.remove('open');
+      closeBtn.addEventListener('click', closeModal);
+      backdrop.addEventListener('click', closeModal);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+      });
+    }
+
+    modal.classList.add('open');
+  });
+}
+

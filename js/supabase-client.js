@@ -115,10 +115,40 @@
   let _supabase = null;
 
   function getSavedConfig() {
+    const url = localStorage.getItem(STORAGE_KEY_URL) || 
+                window.ENV?.SUPABASE_URL || 
+                window.ENV?.NEXT_PUBLIC_SUPABASE_URL || 
+                window.ENV?.SUPABASE_PROJECT_URL || 
+                window.ENV?.VITE_SUPABASE_URL || '';
+
+    const key = localStorage.getItem(STORAGE_KEY_KEY) || 
+                window.ENV?.SUPABASE_ANON_KEY || 
+                window.ENV?.NEXT_PUBLIC_SUPABASE_ANON_KEY || 
+                window.ENV?.SUPABASE_PUBLISHABLE_KEY || 
+                window.ENV?.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || 
+                window.ENV?.SUPABASE_KEY || 
+                window.ENV?.VITE_SUPABASE_ANON_KEY || '';
+
     return {
-      url: localStorage.getItem(STORAGE_KEY_URL) || window.ENV?.SUPABASE_URL || window.ENV?.NEXT_PUBLIC_SUPABASE_URL || '',
-      key: localStorage.getItem(STORAGE_KEY_KEY) || window.ENV?.SUPABASE_ANON_KEY || window.ENV?.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+      url: url ? url.trim() : '',
+      key: key ? key.trim() : ''
     };
+  }
+
+  async function ensureConfig() {
+    let cfg = getSavedConfig();
+    if ((!cfg.url || !cfg.key) && window.ENV && typeof window.ENV.loadRuntimeEnv === 'function') {
+      try {
+        await window.ENV.loadRuntimeEnv();
+        cfg = getSavedConfig();
+      } catch (e) {
+        // Fallback
+      }
+    }
+    if (cfg.url && cfg.key && !_supabase) {
+      initSupabaseClient();
+    }
+    return cfg;
   }
 
   function initSupabaseClient() {
@@ -870,14 +900,26 @@
     }
 
     try {
-      const res = await fetch(`${targetUrl}/rest/v1/projects?select=count`, {
-        method: 'HEAD',
+      // 1. Try testing OpenAPI endpoint with apikey
+      const res = await fetch(`${targetUrl}/rest/v1/`, {
+        method: 'GET',
         headers: {
-          apikey: targetKey,
-          Authorization: `Bearer ${targetKey}`
+          'apikey': targetKey,
+          'Authorization': `Bearer ${targetKey}`
         }
       });
-      return { ok: res.ok, status: res.status };
+      if (res.ok) {
+        return { ok: true, status: res.status };
+      }
+
+      // 2. Alternatively check Auth health endpoint
+      const authRes = await fetch(`${targetUrl}/auth/v1/health`, {
+        method: 'GET',
+        headers: {
+          'apikey': targetKey
+        }
+      });
+      return { ok: authRes.ok, status: authRes.status };
     } catch (e) {
       return { ok: false, error: e.message };
     }
@@ -901,6 +943,7 @@
     getClient,
     isConfigured,
     getSavedConfig,
+    ensureConfig,
     setConfig,
     disconnect,
     testConnection,

@@ -73,11 +73,18 @@ Retrieve your credentials from Supabase:
 ### B. Vercel Production Deployment Configuration
 In your Vercel project dashboard:
 1. Go to **Settings** → **Environment Variables**.
-2. Add the following variables:
-   - `SUPABASE_URL`: `https://<your-project-ref>.supabase.co`
-   - `SUPABASE_ANON_KEY`: `<your-anon-public-key>`
+2. Add the following variables (all common naming patterns are automatically supported):
+   - **Supabase Project URL:**
+     - Name: `SUPABASE_URL` (or `NEXT_PUBLIC_SUPABASE_URL`)
+     - Value: `https://<your-project-ref>.supabase.co`
+   - **Supabase Publishable / Anon Key:**
+     - Name: `SUPABASE_ANON_KEY` (or `SUPABASE_PUBLISHABLE_KEY` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` / `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`)
+     - Value: `<your-anon-or-publishable-key>` (starts with `eyJhbGciOi...` or `sb_pub_...`)
 3. Set Environment to **Production**, **Preview**, and **Development**.
-4. Click **Save**.
+4. Click **Save** and trigger a **Redeploy** on Vercel.
+
+> [!NOTE]
+> During Vercel build, `build-env.js` automatically compiles these environment variables into `js/env.js`. If deployed without a build step, the `/api/env` serverless function provides dynamic runtime resolution. Additionally, admins can configure keys directly from the `/admin/login` screen using the **Quick Setup** drawer.
 
 ---
 
