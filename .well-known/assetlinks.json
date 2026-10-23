@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "in.rkdigitalstudio.app",
+      "sha256_cert_fingerprints": [
+        "14:6D:E9:7F:0E:52:D7:11:86:10:5E:24:14:40:B8:43:24:85:F0:83:27:04:45:90:3F:85:93:B4:DC:BC:82:31"
+      ]
+    }
+  }
+]

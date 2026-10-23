@@ -618,3 +618,16 @@ function initFounderPhotoLightbox() {
   });
 }
 
+/* ==========================================================================
+   9. PWA & Android Service Worker Registration
+   Enables instant offline caching & standalone app performance
+   ========================================================================== */
+if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch((err) => {
+      console.warn('[SW] Registration failed:', err);
+    });
+  });
+}
+
+

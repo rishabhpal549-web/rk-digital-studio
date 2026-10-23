@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">RK DIGITAL STUDIO</string>
+    <string name="web_url">https://www.rkdigitaistudio.in/?source=android_app</string>
+    <string name="offline_title">No Internet Connection</string>
+    <string name="offline_message">Please check your internet connection and tap retry to load RK DIGITAL STUDIO.</string>
+    <string name="retry">Retry Connection</string>
+</resources>

@@ -1,21 +1,42 @@
 {
+  "id": "in.rkdigitalstudio.app",
   "name": "RK DIGITAL STUDIO",
-  "short_name": "RK DIGITAL STUDIO",
-  "description": "Professional website development & digital solutions in Varanasi, Mirzapur, and Chunar.",
-  "start_url": "/",
+  "short_name": "RK Studio",
+  "description": "Official app of RK DIGITAL STUDIO — Professional Website Development & Digital Solutions in Varanasi, Mirzapur, and Chunar.",
+  "start_url": "/?source=app",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#0b0f19",
   "theme_color": "#0b0f19",
+  "categories": [
+    "business",
+    "productivity"
+  ],
   "icons": [
     {
       "src": "/assets/favicon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/assets/favicon-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
