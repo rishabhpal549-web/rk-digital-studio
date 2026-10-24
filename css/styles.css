@@ -2904,6 +2904,37 @@ button, input, select, textarea {
   cursor: pointer;
 }
 
+details.faq-card summary.faq-header {
+  list-style: none;
+  user-select: none;
+  transition: var(--transition);
+}
+
+details.faq-card summary.faq-header::-webkit-details-marker {
+  display: none;
+}
+
+details.faq-card .faq-icon {
+  transition: transform 0.25s ease, stroke 0.25s ease;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+details[open].faq-card {
+  border-color: rgba(56, 189, 248, 0.45);
+  background: rgba(15, 23, 42, 0.95);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+details[open].faq-card .faq-icon {
+  transform: rotate(180deg);
+  stroke: #38bdf8;
+}
+
+details[open].faq-card summary.faq-header {
+  color: #38bdf8;
+}
+
 .faq-body {
   padding: 0 22px 20px;
   color: #cbd5e1;
